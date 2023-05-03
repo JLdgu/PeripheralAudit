@@ -1,0 +1,5 @@
+.open D:\\temp\\peripheralaudit.db
+.import --csv Sites.csv Sites
+.mode column
+select * from Sites;
+.quit 1
