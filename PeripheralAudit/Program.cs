@@ -10,9 +10,13 @@ IHost host = Host.CreateDefaultBuilder(args)
 
 PeripheralAuditDbContext dbContext = host.Services.GetRequiredService<PeripheralAuditDbContext>();
 
-//dbContext.Database.EnsureDeleted();
+dbContext.Database.EnsureDeleted();
 dbContext.Database.EnsureCreated();
 //dbContext.Database.Migrate();
+
+string sql = dbContext.Database.GenerateCreateScript();
+
+File.WriteAllText("d:/temp/CreatePADb.sql", sql);
 
 void ConfigureDatabase(HostBuilderContext context, IServiceCollection services)
 {

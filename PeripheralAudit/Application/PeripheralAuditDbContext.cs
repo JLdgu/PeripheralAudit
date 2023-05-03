@@ -7,6 +7,12 @@ public sealed class PeripheralAuditDbContext : DbContext
 {
     public DbSet<Site> Sites { get; set; }
 
+    public DbSet<Location> Locations { get; set; }
+
+    public DbSet<Location> Docks { get; set; }
+
+    public DbSet<Location> Monitors { get; set; }
+
     public PeripheralAuditDbContext(DbContextOptions options) : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -21,5 +27,14 @@ public sealed class PeripheralAuditDbContext : DbContext
         //optionsBuilder.LogTo(Console.WriteLine , new[] { DbLoggerCategory.Query.Name, DbLoggerCategory.Update.Name}).EnableSensitiveDataLogging();
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Site>().ToTable(nameof(Site));
+        modelBuilder.Entity<Location>().ToTable(nameof(Location));
+        modelBuilder.Entity<Dock>().ToTable(nameof(Dock));
+        modelBuilder.Entity<Entities.Monitor>().ToTable(nameof(Entities.Monitor));
 
+        base.OnModelCreating(modelBuilder);
+    }
+    
 }
