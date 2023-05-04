@@ -16,7 +16,7 @@ dbContext.Database.EnsureCreated();
 
 string sql = dbContext.Database.GenerateCreateScript();
 
-File.WriteAllText("d:/temp/CreatePADb.sql", sql);
+File.WriteAllText("c:/dev/temp/CreatePADb.sql", sql);
 
 void ConfigureDatabase(HostBuilderContext context, IServiceCollection services)
 {

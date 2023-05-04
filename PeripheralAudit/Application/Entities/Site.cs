@@ -1,6 +1,6 @@
 ﻿namespace PeripheralAudit.Application.Entities;
 
-public class Site
+public sealed class Site
 {
     public int Id { get; set; }
 

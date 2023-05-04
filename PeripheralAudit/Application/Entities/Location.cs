@@ -1,6 +1,6 @@
 namespace PeripheralAudit.Application.Entities;
 
-public class Location
+public sealed class Location
 {
     public int Id { get; set; }
 
