@@ -1,5 +1,4 @@
 <#
-c:\Users\passp\Development\SQLiteTools\sqlite3.exe -init .\convert.sqlite3
+c:/dev/SQLite/sqlite3.exe -init .\convert.sqlite3
 #>
-d:\SQLiteTools\sqlite3.exe -init convert.sqlite3
-.quit 1
+d:/SQLite/sqlite3.exe -init convert.sqlite3
