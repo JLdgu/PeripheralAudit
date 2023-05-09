@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=windows-1252">
+    <title>Desks for location</title>
+    <link rel="stylesheet" href="reportTemplate.css" />
+</head>
+
+<body>
+    <header>
+        <div class="flex">
+            <div class="reportTitle">EUC Desk Audit Report</div>
+            <div id="reportDate" style="font-size: small;">Report produced:04/05/2023</div>
+        </div>
+        <div id="reportSite" style=" font-size: large; padding: 5px 0;">Site: Barnstaple, 20 St. George's Road</div>
+    </header>
+    <div style="display: flex;">
+        <table id="reportTable">
+            <tr>
+                <th colspan="2"></th>
+                <th colspan="3" style="text-align: center;">Monitor Grade</th>
+                <th colspan="6"></th>
+            </tr>
+            <tr>
+                <th>Location</th>
+                <th>Desks</th>
+                <th>Bronze</th>
+                <th>Silver</th>
+                <th>Gold</th>
+                <th>Docks</th>
+                <th>Dock PSUs</th>
+                <th>PCs</th>
+                <th>Keyboards</th>
+                <th>Mice</th>
+                <th>Chairs</th>
+            </tr>
+            <tr>
+                <td class="tal">Row 1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>
+                <td>10</td>
+                <td>10</td>
+                <td>0</td>
+            </tr>
+            <tr id="reportRow">
+                <td class="tal">Row 2</td>
+                <td>2</td>
+                <td>2</td>
+                <td>2</td>
+                <td>0</td>
+                <td>11</td>
+                <td>11</td>
+                <td>0</td>
+                <td>10</td>
+                <td>10</td>
+                <td>0</td>
+            </tr>
+        </table>
+        <table id="key">
+            <tr>
+                <th colspan="2" style="text-align: center;">Monitor Grading Key</th>
+            </tr>
+            <tr>
+                <th>Monitor size</th>
+                <th>Grade</th>
+            </tr>
+            <tr>
+                <td class="tal">Single 17" or worse</td>
+                <td style="background-color: #574117; color: white;">Bronze</td>
+            </tr>
+            <tr>
+                <td class="tal">Dual 17" or Single 23/24"</td>
+                <td style="background-color: silver;">Silver</td>
+            </tr>
+            <tr>
+                <td class="tal">Dual 23/24" or better</td>
+                <td style="background-color: #c79750; color: white;">Gold</td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

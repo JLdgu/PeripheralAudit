@@ -15,8 +15,10 @@ dbContext.Database.EnsureCreated();
 //dbContext.Database.Migrate();
 
 string sql = dbContext.Database.GenerateCreateScript();
-
 File.WriteAllText("c:/dev/temp/CreatePADb.sql", sql);
+
+GenerateReport report = new();
+report.Execute();
 
 void ConfigureDatabase(HostBuilderContext context, IServiceCollection services)
 {
