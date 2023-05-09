@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PeripheralAudit.Application;
 
 IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(ConfigureDatabase)
-.Build();
+    .ConfigureDbServices()
+    .Build();
 
 PeripheralAuditDbContext dbContext = host.Services.GetRequiredService<PeripheralAuditDbContext>();
 
@@ -15,15 +14,8 @@ dbContext.Database.EnsureCreated();
 //dbContext.Database.Migrate();
 
 string sql = dbContext.Database.GenerateCreateScript();
-File.WriteAllText("c:/dev/temp/CreatePADb.sql", sql);
+//File.WriteAllText("c:/dev/temp/CreatePADb.sql", sql);
+File.WriteAllText("d:/temp/CreatePADb.sql", sql);
 
 GenerateReport report = new();
 report.Execute();
-
-void ConfigureDatabase(HostBuilderContext context, IServiceCollection services)
-{
-    string? connectionString = context.Configuration.GetConnectionString("Default");
-
-    services.AddDbContext<PeripheralAuditDbContext>(
-                options => options.UseSqlite(connectionString));
-}
