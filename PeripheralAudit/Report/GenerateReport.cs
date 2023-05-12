@@ -1,12 +1,22 @@
 using HtmlAgilityPack;
+using PeripheralAudit.Application;
 
 internal sealed class GenerateReport
 {
+    private PeripheralAuditDbContext _dbContext;
+    private string _reportOutput;
+    
+    public GenerateReport(PeripheralAuditDbContext dbContext, string reportOutput)
+    {
+        _dbContext = dbContext;
+        _reportOutput = reportOutput;
+    }
+
     internal void Execute()
     {
-        if (!File.Exists("c:/dev/temp/reportTemplate.css"))
-            File.Copy("./htmltemplate/reportTemplate.css","c:/dev/temp/reportTemplate.css");
-        
+        string css = Path.Combine(_reportOutput, "auditTemplate.css"); if (!File.Exists("c:/dev/temp/reportTemplate.css"))
+            File.Copy("./htmltemplate/reportTemplate.css", "c:/dev/temp/reportTemplate.css");
+
         HtmlDocument template = new HtmlDocument();
         template.Load(@".\htmltemplate\reportTemplate.html");
 
@@ -19,18 +29,18 @@ internal sealed class GenerateReport
         reportSite.InnerHtml = "County Hall";
 
         HtmlNode reportTable = template.DocumentNode.SelectSingleNode("//table[@id='reportTable']");
-        
+
         HtmlNode reportRow = template.DocumentNode.SelectSingleNode("//tr[@id='reportRow']");
 
         var newNode = reportRow.Clone();
         newNode.Id = "newRow3";
-        reportTable.InsertAfter(newNode,reportRow);
+        reportTable.InsertAfter(newNode, reportRow);
         newNode = reportRow.Clone();
         newNode.Id = "newRow4";
-        reportTable.InsertAfter(newNode,reportRow);
+        reportTable.InsertAfter(newNode, reportRow);
         newNode = reportRow.Clone();
         newNode.Id = "newRow5";
-        reportTable.InsertAfter(newNode,reportRow);
+        reportTable.InsertAfter(newNode, reportRow);
 
         // foreach (var node in reportTable.ChildNodes)
         // {

@@ -11,11 +11,10 @@ public static class ConfigureDbServicesExtensions
     {
         host.ConfigureServices((context, services) =>
         {
-            string? connectionString = context.Configuration.GetConnectionString("DefaultD");
+            string? connectionString = context.Configuration.GetConnectionString("DefaultC");
 
             services.AddDbContext<PeripheralAuditDbContext>(
                         options => options.UseSqlite(connectionString));
-
         });
 
         return host;
