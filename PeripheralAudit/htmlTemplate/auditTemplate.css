@@ -11,7 +11,7 @@ header {
 
 .flex {
     display: flex;
-    align-items: stretch;
+    align-items: flex-start;
 }
 
 .reportTitle {

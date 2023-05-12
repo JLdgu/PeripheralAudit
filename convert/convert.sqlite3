@@ -1,6 +1,7 @@
 /*
-.open c:/dev/temp/peripheralaudit.db
-*/
 .open d:/temp/peripheralaudit.db
-.import --csv Sites.csv Sites
+*/
+.open c:/dev/temp/peripheralaudit.db
+.import --csv Sites.csv Site
+.import --csv Location.csv Location
 .quit

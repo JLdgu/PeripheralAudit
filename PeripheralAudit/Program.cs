@@ -13,16 +13,15 @@ IHost host = Host.CreateDefaultBuilder(args)
     .Build();
 
 PeripheralAuditDbContext dbContext = host.Services.GetRequiredService<PeripheralAuditDbContext>();
-dbContext.Database.EnsureDeleted();
+//dbContext.Database.EnsureDeleted();
 dbContext.Database.EnsureCreated();
 //dbContext.Database.Migrate();
-
 
 if (args.Any())
 {
     for (int i = 0; i < args.Length; i++)
     {
-        if (args[i].ToLower() == "dbscript" )
+        if (args[i].ToLower() == "dbscript")
         {
             _dbScript = true;
         }
@@ -30,9 +29,9 @@ if (args.Any())
 }
 if (_dbScript)
 {
-        string sql = dbContext.Database.GenerateCreateScript();
-        File.WriteAllText("d:/temp/CreatePADb.sql", sql);
-        return;
+    string sql = dbContext.Database.GenerateCreateScript();
+    File.WriteAllText("d:/temp/CreatePADb.sql", sql);
+    return;
 }
 
 GenerateReport report = new(dbContext, _reportOutput);

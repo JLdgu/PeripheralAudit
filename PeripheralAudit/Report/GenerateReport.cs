@@ -1,11 +1,16 @@
 using HtmlAgilityPack;
 using PeripheralAudit.Application;
+using PeripheralAudit.Application.Entities;
+
+namespace PeripheralAudit.Report;
 
 internal sealed class GenerateReport
 {
     private PeripheralAuditDbContext _dbContext;
     private string _reportOutput;
-    
+
+    HtmlDocument _template = new HtmlDocument();
+
     public GenerateReport(PeripheralAuditDbContext dbContext, string reportOutput)
     {
         _dbContext = dbContext;
@@ -14,46 +19,110 @@ internal sealed class GenerateReport
 
     internal void Execute()
     {
-        string css = Path.Combine(_reportOutput, "auditTemplate.css"); if (!File.Exists("c:/dev/temp/reportTemplate.css"))
-            File.Copy("./htmltemplate/reportTemplate.css", "c:/dev/temp/reportTemplate.css");
+        const string CSS_FILE = "AuditTemplate.css";
+        const string HTML_FILE = "AuditTemplate.html";
 
-        HtmlDocument template = new HtmlDocument();
-        template.Load(@".\htmltemplate\reportTemplate.html");
+        string cssTemplate = Path.Combine("./HtmlTemplate", CSS_FILE);
+        string cssOutput = Path.Combine(_reportOutput, CSS_FILE);
+        if (!File.Exists(cssOutput))
+            File.Copy(cssTemplate, cssOutput);
 
-        string reportDate = template.GetElementbyId("reportDate").InnerHtml;
+        string htmlTemplate = Path.Combine("./HtmlTemplate", HTML_FILE);
 
-        HtmlNode reportDateDiv = template.DocumentNode.SelectSingleNode("//div[@id='reportDate']");
-        reportDateDiv.InnerHtml = $"Report produced: {DateTime.Now.ToLongTimeString()}";
+        List<Site> sites = _dbContext.Sites.ToList();
+        foreach (Site site in sites)
+        {
+            string htmlOutput = Path.Combine(_reportOutput, HTML_FILE);
+            if (!File.Exists(htmlOutput))
+                File.Delete(htmlOutput);
 
-        HtmlNode reportSite = template.DocumentNode.SelectSingleNode("//div[@id='reportSite']");
-        reportSite.InnerHtml = "County Hall";
+            _template.Load(htmlTemplate);
 
-        HtmlNode reportTable = template.DocumentNode.SelectSingleNode("//table[@id='reportTable']");
+            string reportDate =_template.GetElementbyId("reportDate").InnerHtml;
 
-        HtmlNode reportRow = template.DocumentNode.SelectSingleNode("//tr[@id='reportRow']");
+            HtmlNode reportDateDiv =_template.DocumentNode.SelectSingleNode("//div[@id='reportDate']");
+            reportDateDiv.InnerHtml = $"Report produced: {DateTime.Now.ToLongDateString()} {DateTime.Now.ToLongTimeString()}";
 
-        var newNode = reportRow.Clone();
-        newNode.Id = "newRow3";
-        reportTable.InsertAfter(newNode, reportRow);
-        newNode = reportRow.Clone();
-        newNode.Id = "newRow4";
-        reportTable.InsertAfter(newNode, reportRow);
-        newNode = reportRow.Clone();
-        newNode.Id = "newRow5";
-        reportTable.InsertAfter(newNode, reportRow);
+            HtmlNode reportSite =_template.DocumentNode.SelectSingleNode("//div[@id='reportSite']");
+            reportSite.InnerHtml = site.Name;
 
-        // foreach (var node in reportTable.ChildNodes)
-        // {
-        //     if (node.Id == "reportRow")
-        //     {   
-        //         var newNode = node.Clone();
-        //         newNode.Id = "newRow2";
-        //         reportTable.InsertAfter(newNode,node);
-        //         Console.WriteLine(node.InnerHtml);
-        //         break;
-        //     }
-        // }
+            HtmlNode reportTable =_template.DocumentNode.SelectSingleNode("//table[@id='reportTable']");
 
-        template.Save("c:/dev/temp/auditreport.html");
+            HtmlNode reportRow =_template.DocumentNode.SelectSingleNode("//tr[@id='reportHeader']");
+
+            List<Location> locations = _dbContext.Locations
+                .Where(l => l.Site.Id == site.Id)
+                .OrderByDescending(l => l.Name)
+                .ToList();
+
+            foreach (Location location in locations)
+            {
+                var newRow = ReportRow(location);
+                reportTable.InsertAfter(newRow, reportRow);
+            }
+
+           _template.Save(htmlOutput);
+
+            break;
+        }
+    }
+
+    private HtmlNode ReportRow(Location location)
+    {
+        HtmlNode tr = _template.CreateElement("tr");
+
+        HtmlNode name = _template.CreateElement("td");
+        name.Attributes.Add("class", "tal");
+        name.InnerHtml = location.Name;
+        tr.ChildNodes.Append(name);
+
+        HtmlNode desks = TableData(location.DeskCount);
+        tr.ChildNodes.Append(desks);
+
+        HtmlNode single = TableData(location.MonitorSingleCount);
+        tr.ChildNodes.Append(single);
+        HtmlNode dual = TableData(location.MonitorDualCount);
+        tr.ChildNodes.Append(dual);
+        HtmlNode bronze = TableData(location.MonitorGradeBronzeCount);
+        tr.ChildNodes.Append(bronze);
+        HtmlNode silver = TableData(location.MonitorGradeSilverCount);
+        tr.ChildNodes.Append(silver);
+        HtmlNode gold = TableData(location.MonitorGradeGoldCount);
+        tr.ChildNodes.Append(gold);
+        HtmlNode dock = TableData(location.DockCount);
+        tr.ChildNodes.Append(dock);
+        // TODO complete table row
+
+        return tr;
+    }
+    private HtmlNode TableData(int content)
+    {
+        return TableData(content.ToString());
+    }
+
+    private HtmlNode TableData(string content)
+    {
+        HtmlNode tableData = _template.CreateElement("td");
+        tableData.InnerHtml = content;
+        return tableData;
+    }
+
+    private void TestMethod()
+    {
+        List<Site> sites = _dbContext.Sites.ToList();
+        foreach (Site site in sites)
+        {
+            Console.WriteLine(site.Name);
+            List<Location> locations = _dbContext.Locations
+                .Where(l => l.Site.Id == site.Id)
+                .OrderByDescending(l => l.Name)
+                .ToList();
+
+            foreach (Location location in locations)
+            {
+                Console.WriteLine(location.Name);
+            }
+            break;
+        }
     }
 }

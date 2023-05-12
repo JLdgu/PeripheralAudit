@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html;charset=windows-1252">
     <title>Desks for location</title>
-    <link rel="stylesheet" href="reportTemplate.css" />
+    <link rel="stylesheet" href="auditTemplate.css" />
 </head>
 
 <body>
@@ -15,16 +15,19 @@
         </div>
         <div id="reportSite" style=" font-size: large; padding: 5px 0;">Site: Barnstaple, 20 St. George's Road</div>
     </header>
-    <div style="display: flex;">
+    <div class="flex">
         <table id="reportTable">
             <tr>
                 <th colspan="2"></th>
+                <th colspan="2" style="text-align: center;">Monitor</th>
                 <th colspan="3" style="text-align: center;">Monitor Grade</th>
                 <th colspan="6"></th>
             </tr>
-            <tr>
+            <tr id="reportHeader">
                 <th>Location</th>
                 <th>Desks</th>
+                <th>Single</th>
+                <th>Dual</th>
                 <th>Bronze</th>
                 <th>Silver</th>
                 <th>Gold</th>
@@ -35,24 +38,14 @@
                 <th>Mice</th>
                 <th>Chairs</th>
             </tr>
-            <tr>
-                <td class="tal">Row 1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>0</td>
-                <td>10</td>
-                <td>10</td>
-                <td>0</td>
-            </tr>
+            <!--
             <tr id="reportRow">
                 <td class="tal">Row 2</td>
                 <td>2</td>
                 <td>2</td>
                 <td>2</td>
+                <td>1</td>
+                <td>1</td>
                 <td>0</td>
                 <td>11</td>
                 <td>11</td>
@@ -61,8 +54,9 @@
                 <td>10</td>
                 <td>0</td>
             </tr>
+            -->
         </table>
-        <table id="key">
+        <table id="key" style="align-self:auto">
             <tr>
                 <th colspan="2" style="text-align: center;">Monitor Grading Key</th>
             </tr>
