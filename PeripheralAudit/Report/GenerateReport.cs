@@ -32,7 +32,7 @@ internal sealed class GenerateReport
         List<Site> sites = _dbContext.Sites.ToList();
         foreach (Site site in sites)
         {
-            string htmlOutput = Path.Combine(_reportOutput, HTML_FILE);
+            string htmlOutput = Path.Combine(_reportOutput, site.Name + ".html");
             if (!File.Exists(htmlOutput))
                 File.Delete(htmlOutput);
 
@@ -62,8 +62,6 @@ internal sealed class GenerateReport
             }
 
            _template.Save(htmlOutput);
-
-            break;
         }
     }
 
@@ -91,10 +89,19 @@ internal sealed class GenerateReport
         tr.ChildNodes.Append(gold);
         HtmlNode dock = TableData(location.DockCount);
         tr.ChildNodes.Append(dock);
-        // TODO complete table row
-
+        HtmlNode dockPSU = TableData(location.DockPsuCount);
+        tr.ChildNodes.Append(dockPSU);
+        HtmlNode pc = TableData(location.PcCount);
+        tr.ChildNodes.Append(pc);
+        HtmlNode keyboard = TableData(location.KeyboardCount);
+        tr.ChildNodes.Append(keyboard);
+        HtmlNode mouse = TableData(location.MouseCount);
+        tr.ChildNodes.Append(mouse);
+        HtmlNode chair = TableData(location.ChairCount);
+        tr.ChildNodes.Append(chair);
         return tr;
     }
+
     private HtmlNode TableData(int content)
     {
         return TableData(content.ToString());
