@@ -6,6 +6,7 @@ using PeripheralAudit.Report;
 
 bool _dbScript = false;
 string? _reportOutput = string.Empty;
+string? _scriptOutput = string.Empty;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureDbServices()
@@ -24,13 +25,15 @@ if (args.Any())
         if (args[i].ToLower() == "dbscript")
         {
             _dbScript = true;
+            continue;
         }
     }
 }
+
 if (_dbScript)
 {
     string sql = dbContext.Database.GenerateCreateScript();
-    File.WriteAllText("d:/temp/CreatePADb.sql", sql);
+    File.WriteAllText(Path.Combine(_reportOutput,"CreatePADb.sql"), sql);
     return;
 }
 
@@ -41,4 +44,5 @@ void ConfigureAppSettings(HostBuilderContext context, IServiceCollection collect
 {
     var config = context.Configuration;
     _reportOutput = config["ReportSettings:Output"];
+    _scriptOutput = config["ScriptSettings:Output"];
 }
