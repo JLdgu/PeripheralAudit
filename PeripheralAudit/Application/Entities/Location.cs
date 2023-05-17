@@ -4,9 +4,9 @@ public sealed class Location
 {
     public int Id { get; set; }
 
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
-    public Site Site  { get; set; }
+    public Site Site  { get; set; } = null!;
 
     public int DeskCount { get; set; }
 

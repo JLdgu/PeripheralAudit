@@ -5,13 +5,13 @@ using PeripheralAudit.Application.Entities;
 namespace PeripheralAudit.Application;
 public sealed class PeripheralAuditDbContext : DbContext
 {
-    public DbSet<Site> Sites { get; set; }
+    public DbSet<Site> Sites { get; set; }  = null!;
 
-    public DbSet<Location> Locations { get; set; }
+    public DbSet<Location> Locations { get; set; }  = null!;
 
-    public DbSet<Location> Docks { get; set; }
+    public DbSet<Location> Docks { get; set; }  = null!;
 
-    public DbSet<Location> Monitors { get; set; }
+    public DbSet<Location> Monitors { get; set; }  = null!;
 
     public PeripheralAuditDbContext(DbContextOptions options) : base(options) { }
 
