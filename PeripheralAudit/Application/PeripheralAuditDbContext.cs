@@ -3,7 +3,7 @@
 using PeripheralAudit.Application.Entities;
 
 namespace PeripheralAudit.Application;
-public sealed class PeripheralAuditDbContext : DbContext
+public class PeripheralAuditDbContext : DbContext
 {
     public DbSet<Site> Sites { get; set; }  = null!;
 
@@ -12,7 +12,7 @@ public sealed class PeripheralAuditDbContext : DbContext
     public DbSet<Location> Docks { get; set; }  = null!;
 
     public DbSet<Location> Monitors { get; set; }  = null!;
-
+       
     public PeripheralAuditDbContext(DbContextOptions options) : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PeripheralAudit.Application;
@@ -7,6 +8,7 @@ using PeripheralAudit.Report;
 bool _dbScript = false;
 string? _reportOutput = string.Empty;
 string? _scriptOutput = string.Empty;
+Cost _costs = new();
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureDbServices()
@@ -33,11 +35,11 @@ if (args.Any())
 if (_dbScript)
 {
     string sql = dbContext.Database.GenerateCreateScript();
-    File.WriteAllText(Path.Combine(_reportOutput,"CreatePADb.sql"), sql);
+    File.WriteAllText(Path.Combine(_scriptOutput, "CreatePADb.sql"), sql);
     return;
 }
 
-GenerateReport report = new(dbContext, _reportOutput);
+GenerateReport report = new(dbContext, _reportOutput, _costs);
 report.Execute();
 
 void ConfigureAppSettings(HostBuilderContext context, IServiceCollection collection)
@@ -45,4 +47,34 @@ void ConfigureAppSettings(HostBuilderContext context, IServiceCollection collect
     var config = context.Configuration;
     _reportOutput = config["ReportSettings:Output"];
     _scriptOutput = config["ScriptSettings:Output"];
+
+    string? property = config["PeripheralCosts:Dock"];
+    if (property is null)
+        throw new ArgumentNullException("PeripheralCosts:Dock not found in appsettings.json");
+    _costs.Dock = float.Parse(property);
+
+    property = config["PeripheralCosts:Monitor"];
+    if (property is null)
+        throw new ArgumentNullException("PeripheralCosts:Monitor not found in appsettings.json");
+    _costs.Monitor = float.Parse(property);
+
+    property = config["PeripheralCosts:LargeMonitor"];
+    if (property is null)
+        throw new ArgumentNullException("PeripheralCosts:LargeMonitor not found in appsettings.json");
+    _costs.LargeMonitor = float.Parse(property);
+
+    property = config["PeripheralCosts:Keyboard"];
+    if (property is null)
+        throw new ArgumentNullException("PeripheralCosts:Keyboard not found in appsettings.json");
+    _costs.Keyboard = float.Parse(property);
+
+    property = config["PeripheralCosts:Mouse"];
+    if (property is null)
+        throw new ArgumentNullException("PeripheralCosts:Mouse not found in appsettings.json");
+    _costs.Mouse = float.Parse(property);
+
+    property = config["PeripheralCosts:Chair"];
+    if (property is null)
+        throw new ArgumentNullException("PeripheralCosts:Chair not found in appsettings.json");
+    _costs.Chair = float.Parse(property);
 }
