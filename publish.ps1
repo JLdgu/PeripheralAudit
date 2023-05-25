@@ -1,0 +1,1 @@
+dotnet publish ./PeripheralAudit/PeripheralAudit.csproj -r win10-x64 --self-contained false -o publish
