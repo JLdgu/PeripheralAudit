@@ -1,6 +1,4 @@
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using PeripheralAudit.Application;
 using PeripheralAudit.Application.Entities;
 using PeripheralAudit.Report;
@@ -9,7 +7,7 @@ namespace PeripheralAudit.Tests;
 
 public class UpgradeTests
 {
-    private Cost _costs = new
+    Cost _costs = new
         (
             dock: 11,
             monitor: 13,
@@ -215,5 +213,32 @@ public class UpgradeTests
 
         actual.MouseCount.Should().Be(1);
         actual.MouseCost.Should().Be(_costs.Mouse);
+    }
+
+    [Fact]
+    public void Upgrade_With_Multiple_Items_Should_Round_Correctly()
+    {
+        Cost costs = new
+        (
+            dock: 225,
+            monitor: 115,
+            largeMonitor: 120,
+            keyboard: 8.87m,
+            mouse: 8.24m,
+            chair: 209
+        );
+
+        Location location = new()
+        {
+            Name = "Multiple Desks",
+            DeskCount = 107,
+            DockCount = 89,
+            KeyboardCount = 75,
+            MouseCount = 68
+        };
+
+        Upgrade actual = new(costs, location);
+
+        actual.RepopulationCost.Should().Be(4655.2m);
     }
 }

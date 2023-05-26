@@ -79,7 +79,7 @@ public sealed class GenerateReport
         HtmlNode[] tr = new HtmlNode[2];
 
         tr[0] = _template.CreateElement("tr");
-        HtmlNode name = TableData(location.Name, classAttribute: "ta1");
+        HtmlNode name = TableData(location.Name, classAttribute: "tal");
         tr[0].ChildNodes.Append(name);
         HtmlNode desks = TableData(location.DeskCount);
         tr[0].ChildNodes.Append(desks);

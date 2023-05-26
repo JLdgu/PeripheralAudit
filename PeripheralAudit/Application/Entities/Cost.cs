@@ -3,7 +3,7 @@ namespace PeripheralAudit.Application;
 public class Cost
 {
     public Cost () {}
-    public Cost(float dock, float monitor, float largeMonitor, float keyboard, float mouse, float chair)
+    public Cost(decimal dock, decimal monitor, decimal largeMonitor, decimal keyboard, decimal mouse, decimal chair)
     {
         Dock = dock;
         Monitor = monitor;
@@ -13,10 +13,10 @@ public class Cost
         Chair = chair;
     }
 
-    public float Dock { get; set; }
-    public float Monitor { get; set; }
-    public float LargeMonitor { get; set; }
-    public float Keyboard { get; set; }
-    public float Mouse { get; set; }
-    public float Chair { get; set; }
+    public decimal Dock { get; set; }
+    public decimal Monitor { get; set; }
+    public decimal LargeMonitor { get; set; }
+    public decimal Keyboard { get; set; }
+    public decimal Mouse { get; set; }
+    public decimal Chair { get; set; }
 }

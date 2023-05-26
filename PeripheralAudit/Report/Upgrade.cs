@@ -14,7 +14,7 @@ public sealed class Upgrade
         _location = location;
     }
 
-    public float RepopulationCost { get => BronzeMonitorCost + DockCost + KeyboardCost + MouseCost; }
+    public decimal RepopulationCost { get => BronzeMonitorCost + DockCost + KeyboardCost + MouseCost; }
 
     public int DeskCount { get => _location.DeskCount; }
 
@@ -23,31 +23,31 @@ public sealed class Upgrade
         get => DeskCount - _location.MonitorGradeBronzeCount - _location.MonitorGradeSilverCount - _location.MonitorGradeGoldCount; 
     }
 
-    public float BronzeMonitorCost { get => 0; }
+    public decimal BronzeMonitorCost { get => 0; }
 
     public int SilverMonitorCount 
     { 
         get => DeskCount - _location.MonitorGradeSilverCount - _location.MonitorGradeGoldCount; 
     }
 
-    public float SilverMonitorCost { get => SilverMonitorCount * _cost.Monitor; }
+    public decimal SilverMonitorCost { get => SilverMonitorCount * _cost.Monitor; }
 
     public int GoldMonitorCount { get => DeskCount - _location.MonitorGradeGoldCount; }
 
-    public float GoldMonitorCost { get => GoldMonitorCount * _cost.LargeMonitor; }
+    public decimal GoldMonitorCost { get => GoldMonitorCount * _cost.LargeMonitor; }
 
     public int DockCount { get => DeskCount - _location.DockCount - _location.PcCount; }
 
-    public float DockCost { get => DockCount * _cost.Dock; }
+    public decimal DockCost { get => DockCount * _cost.Dock; }
 
     public int KeyboardCount { get => DeskCount - _location.KeyboardCount; }
 
-    public float KeyboardCost { get => KeyboardCount * _cost.Keyboard; }
+    public decimal KeyboardCost { get => KeyboardCount * _cost.Keyboard; }
 
     public int MouseCount { get => DeskCount - _location.MouseCount; }
 
-    public float MouseCost { get => MouseCount * _cost.Mouse; }
+    public decimal MouseCost { get => MouseCount * _cost.Mouse; }
 
     // public int ChairCount { get; set; }
-    // public float Chair { get; set; }    
+    // public decimal Chair { get; set; }    
 }

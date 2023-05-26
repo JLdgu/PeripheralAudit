@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 using PeripheralAudit.Application.Entities;
 
@@ -16,16 +17,12 @@ public class PeripheralAuditDbContext : DbContext
     public PeripheralAuditDbContext(DbContextOptions options) : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlite(@"data source=peripheralaudit.db;");
-        }
+        => optionsBuilder.LogTo(message => Debug.WriteLine(message))
+                         .EnableSensitiveDataLogging();
         //optionsBuilder.UseLazyLoadingProxies(); //requires entityframeworkcore.proxies package
-        optionsBuilder.EnableSensitiveDataLogging();
+        //optionsBuilder.EnableSensitiveDataLogging();
         //optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information).EnableSensitiveDataLogging();
         //optionsBuilder.LogTo(Console.WriteLine , new[] { DbLoggerCategory.Query.Name, DbLoggerCategory.Update.Name}).EnableSensitiveDataLogging();
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
