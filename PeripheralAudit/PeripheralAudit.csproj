@@ -5,6 +5,9 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version>0.1.0.1</Version>
+    <Company>Devon County Council</Company>
+    <Copyright>Devon County Council</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
