@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.CommandLine;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PeripheralAudit.Application;
 using PeripheralAudit.Report;
 
-bool _dbScript = false;
 string? _reportOutput = string.Empty;
 string? _scriptOutput = string.Empty;
 Cost _costs = new();
@@ -20,27 +20,31 @@ PeripheralAuditDbContext dbContext = host.Services.GetRequiredService<Peripheral
 dbContext.Database.EnsureCreated();
 //dbContext.Database.Migrate();
 
-if (args.Any())
-{
-    for (int i = 0; i < args.Length; i++)
-    {
-        if (args[i].ToLower() == "dbscript")
-        {
-            _dbScript = true;
-            continue;
-        }
-    }
-}
+var rootCommand = new RootCommand("PeripheralAudit report generation");
 
-if (_dbScript)
-{
-    string sql = dbContext.Database.GenerateCreateScript();
-    File.WriteAllText(Path.Combine(_scriptOutput, "CreatePADb.sql"), sql);
-    return;
-}
+var scriptCommand = new Command("dbscript","Generate Database Script");
+scriptCommand.SetHandler( () => 
+{    
+    GenerateDBScript(_scriptOutput);
+});
+rootCommand.AddCommand(scriptCommand);
 
-GenerateReport report = new(dbContext, _reportOutput, _costs);
-report.Execute();
+var reportCommand = new Command("report", "Generate reports for location(s)");
+var locationOption = new Option<string>(
+     name: "--location",      
+     description: "Location Filter or ALL",
+     getDefaultValue: () => "ALL");
+locationOption.AddAlias("-l");
+reportCommand.AddOption(locationOption);
+reportCommand.SetHandler( (location) =>
+{
+    GenerateReport report = new(dbContext, _reportOutput, _costs);
+    report.Execute(location);
+},
+locationOption);
+rootCommand.AddCommand(reportCommand);
+
+return rootCommand.Invoke(args);
 
 void ConfigureAppSettings(HostBuilderContext context, IServiceCollection collection)
 {
@@ -77,4 +81,10 @@ void ConfigureAppSettings(HostBuilderContext context, IServiceCollection collect
     if (property is null)
         throw new ArgumentNullException("PeripheralCosts:Chair not found in appsettings.json");
     _costs.Chair = float.Parse(property);
+}
+
+void GenerateDBScript(string _scriptOutput)
+{
+    string sql = dbContext.Database.GenerateCreateScript();
+    File.WriteAllText(Path.Combine(_scriptOutput, "CreatePADb.sql"), sql);
 }

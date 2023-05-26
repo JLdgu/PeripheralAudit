@@ -19,7 +19,7 @@ public sealed class GenerateReport
         _costs = costs;
     }
 
-    internal void Execute()
+    public void Execute(string locationFilter)
     {
         const string CSS_FILE = "AuditTemplate.css";
         const string HTML_FILE = "AuditTemplate.html";
@@ -34,6 +34,16 @@ public sealed class GenerateReport
         List<Site> sites = _dbContext.Sites.ToList();
         foreach (Site site in sites)
         {
+            IQueryable<Location> query = _dbContext.Locations.AsQueryable();
+            query = query.Where(l => l.Site.Id == site.Id)
+                         .OrderByDescending(l => l.Name);
+            if (locationFilter != "ALL")            
+                query = query.Where(l => l.Name.Contains(locationFilter));
+            List<Location> locations = query.ToList();
+
+            if (!locations.Any())
+                continue;
+
             string htmlOutput = Path.Combine(_reportOutput, site.Name + ".html");
             if (!File.Exists(htmlOutput))
                 File.Delete(htmlOutput);
@@ -51,11 +61,6 @@ public sealed class GenerateReport
             HtmlNode reportTable = _template.DocumentNode.SelectSingleNode("//table[@id='reportTable']");
 
             HtmlNode reportRow = _template.DocumentNode.SelectSingleNode("//tr[@id='reportHeader']");
-
-            List<Location> locations = _dbContext.Locations
-                .Where(l => l.Site.Id == site.Id)
-                .OrderByDescending(l => l.Name)
-                .ToList();
 
             foreach (Location location in locations)
             {
