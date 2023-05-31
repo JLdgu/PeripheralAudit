@@ -30,7 +30,7 @@ public sealed class Location
 
     public int MouseCount { get; set; }
 
-    public int ChairCount { get; set; }
+    public int? ChairCount { get; set; }
 
     public string? Note { get; set;}
 }

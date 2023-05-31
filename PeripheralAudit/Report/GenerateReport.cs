@@ -19,25 +19,27 @@ public sealed class GenerateReport
         _costs = costs;
     }
 
-    public void Execute(string locationFilter)
+    public void Execute(string siteFilter, string locationFilter)
     {
-        const string CSS_FILE = "AuditTemplate.css";
         const string HTML_FILE = "AuditTemplate.html";
-
-        string cssTemplate = Path.Combine("./HtmlTemplate", CSS_FILE);
-        string cssOutput = Path.Combine(_reportOutput, CSS_FILE);
-        if (!File.Exists(cssOutput))
-            File.Copy(cssTemplate, cssOutput);
 
         string htmlTemplate = Path.Combine("./HtmlTemplate", HTML_FILE);
 
-        List<Site> sites = _dbContext.Sites.ToList();
+        IQueryable<Site> siteQuery = _dbContext.Sites.AsQueryable();
+        if (siteFilter != "ALL")
+            siteQuery = siteQuery.Where(s => s.Name.Contains(siteFilter));
+        List<Site> sites = siteQuery.ToList();
+
+        if (!sites.Any())
+            return;
+
+        //List<Site> sites = _dbContext.Sites.ToList();
         foreach (Site site in sites)
         {
             IQueryable<Location> query = _dbContext.Locations.AsQueryable();
             query = query.Where(l => l.Site.Id == site.Id)
                          .OrderByDescending(l => l.Name);
-            if (locationFilter != "ALL")            
+            if (locationFilter != "ALL")
                 query = query.Where(l => l.Name.Contains(locationFilter));
             List<Location> locations = query.ToList();
 
@@ -117,9 +119,9 @@ public sealed class GenerateReport
         return tr;
     }
 
-    private HtmlNode TableData(int content)
+    private HtmlNode TableData(int? content)
     {
-        return TableData(content.ToString());
+        return TableData(content.ToString() ?? string.Empty);
     }
 
     private HtmlNode TableData(string content, int? colSpan = null, string? classAttribute = null, string? style = null)
@@ -157,21 +159,40 @@ public sealed class GenerateReport
             bronze.InnerHtml = $"Repopultion Costs &#163;{upgrade.RepopulationCost} - ";
             upgradeData.AppendChild(bronze);
 
-            HtmlNode dock = _template.CreateElement(nameof(dock));
-            dock.InnerHtml = $"{upgrade.DockCount} dock(s) @ &#163;{_costs.Dock}, ";
-            upgradeData.AppendChild(dock);
+            if (upgrade.DockCount > 0)
+            {
+                HtmlNode dock = _template.CreateElement(nameof(dock));
+                dock.InnerHtml = $"{upgrade.DockCount} dock{Pluralise(upgrade.DockCount)} @ &#163;{_costs.Dock}, ";
+                upgradeData.AppendChild(dock);
+            }
 
-            HtmlNode monitor = _template.CreateElement(nameof(monitor));
-            monitor.InnerHtml = $"{upgrade.BronzeMonitorCount} monitor(s) @ &#163;0, ";
-            upgradeData.AppendChild(monitor);
+            if (upgrade.BronzeMonitorCount > 0)
+            {
+                HtmlNode monitor = _template.CreateElement(nameof(monitor));
+                monitor.InnerHtml = $"{upgrade.BronzeMonitorCount} monitor{Pluralise(upgrade.BronzeMonitorCount)} @ &#163;0, ";
+                upgradeData.AppendChild(monitor);
+            }
 
-            HtmlNode keyboard = _template.CreateElement(nameof(keyboard));
-            keyboard.InnerHtml = $"{upgrade.KeyboardCount} keyboard(s) @ &#163;{_costs.Keyboard}, ";
-            upgradeData.AppendChild(keyboard);
+            if (upgrade.KeyboardCount > 0)
+            {
+                HtmlNode keyboard = _template.CreateElement(nameof(keyboard));
+                keyboard.InnerHtml = $"{upgrade.KeyboardCount} keyboard{Pluralise(upgrade.KeyboardCount)} @ &#163;{_costs.Keyboard}, ";
+                upgradeData.AppendChild(keyboard);
+            }
 
-            HtmlNode mouse = _template.CreateElement(nameof(mouse));
-            mouse.InnerHtml = $"{upgrade.MouseCount} mice @ &#163;{_costs.Mouse}";
-            upgradeData.AppendChild(mouse);
+            if (upgrade.MouseCount > 0)
+            {
+                HtmlNode mouse = _template.CreateElement(nameof(mouse));
+                mouse.InnerHtml = $"{upgrade.MouseCount} {PluraliseMouse(upgrade.MouseCount)} @ &#163;{_costs.Mouse}, ";
+                upgradeData.AppendChild(mouse);
+            }
+
+            if (upgrade.ChairCount > 0)
+            {
+                HtmlNode chair = _template.CreateElement(nameof(chair));
+                chair.InnerHtml = $"{upgrade.ChairCount} chair{Pluralise((int)upgrade.ChairCount)} @ &#163;{_costs.Chair}";
+                upgradeData.AppendChild(chair);
+            }
 
             htmlBreak = "<br />";
         }
@@ -179,7 +200,7 @@ public sealed class GenerateReport
         if (upgrade.SilverMonitorCount > 0)
         {
             HtmlNode silver = _template.CreateElement(nameof(silver));
-            silver.InnerHtml = $"{htmlBreak}Silver Upgrade Costs &#163;{_costs.Monitor} - {upgrade.SilverMonitorCount} monitor(s) @ &#163;{_costs.Monitor}";
+            silver.InnerHtml = $"{htmlBreak}Silver Upgrade Costs &#163;{upgrade.SilverMonitorCost} - {upgrade.SilverMonitorCount} monitor{Pluralise(upgrade.SilverMonitorCount)} @ &#163;{_costs.Monitor}";
             upgradeData.AppendChild(silver);
 
             htmlBreak = "<br />";
@@ -188,13 +209,24 @@ public sealed class GenerateReport
         if (upgrade.GoldMonitorCount > 0)
         {
             HtmlNode gold = _template.CreateElement(nameof(gold));
-            gold.InnerHtml = $"{htmlBreak}Gold Upgrade Costs &#163;{_costs.LargeMonitor} - {upgrade.GoldMonitorCount} monitor(s) @ &#163;{_costs.LargeMonitor}";
+            gold.InnerHtml = $"{htmlBreak}Gold Upgrade Costs &#163;{upgrade.GoldMonitorCost} - {upgrade.GoldMonitorCount} monitor{Pluralise(upgrade.GoldMonitorCount)} @ &#163;{_costs.LargeMonitor}";
             upgradeData.AppendChild(gold);
         }
-        //         - 5 docks @ &#163;200, 6 monitors @ &#163;0, 4 keyboards @ &#163;25, &#163;3 mice @ &#163;10<br />
-        //         Silver Upgrade Costs &#163;2400 - 24 monitors @ &#163;100<br />
-        //        <span name="GoldCosts">Gold Upgrade Costs &#163;4650 - 31 monitors @ &#163;150</span></td>
 
         return upgradeData;
+    }
+
+    private string Pluralise(int count)
+    {
+        if (count == 1)
+            return string.Empty;
+        return "s";
+    }
+
+    private string PluraliseMouse(int count)
+    {
+        if (count == 1)
+            return "mouse";
+        return "mice";
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.CommandLine;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PeripheralAudit.Application;
@@ -21,6 +20,24 @@ dbContext.Database.EnsureCreated();
 //dbContext.Database.Migrate();
 
 var rootCommand = new RootCommand("PeripheralAudit report generation");
+var siteOption = new Option<string>(
+     name: "--site",      
+     description: "Site Filter or ALL",
+     getDefaultValue: () => "ALL");
+siteOption.AddAlias("-s");
+rootCommand.AddOption(siteOption);
+var locationOption = new Option<string>(
+     name: "--location",      
+     description: "Location Filter or ALL",
+     getDefaultValue: () => "ALL");
+locationOption.AddAlias("-l");
+rootCommand.AddOption(locationOption);
+rootCommand.SetHandler( (site, location) =>
+{
+    GenerateReport report = new(dbContext, _reportOutput, _costs);
+    report.Execute(site, location);
+},
+siteOption, locationOption);
 
 var scriptCommand = new Command("dbscript","Generate Database Script");
 scriptCommand.SetHandler( () => 
@@ -28,21 +45,6 @@ scriptCommand.SetHandler( () =>
     GenerateDBScript(_scriptOutput);
 });
 rootCommand.AddCommand(scriptCommand);
-
-var reportCommand = new Command("report", "Generate reports for location(s)");
-var locationOption = new Option<string>(
-     name: "--location",      
-     description: "Location Filter or ALL",
-     getDefaultValue: () => "ALL");
-locationOption.AddAlias("-l");
-reportCommand.AddOption(locationOption);
-reportCommand.SetHandler( (location) =>
-{
-    GenerateReport report = new(dbContext, _reportOutput, _costs);
-    report.Execute(location);
-},
-locationOption);
-rootCommand.AddCommand(reportCommand);
 
 return rootCommand.Invoke(args);
 

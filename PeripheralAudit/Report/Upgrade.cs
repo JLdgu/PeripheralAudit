@@ -14,21 +14,18 @@ public sealed class Upgrade
         _location = location;
     }
 
-    public decimal RepopulationCost { get => BronzeMonitorCost + DockCost + KeyboardCost + MouseCost; }
+    public decimal RepopulationCost { get => BronzeMonitorCost + DockCost + KeyboardCost + MouseCost + ChairCost; }
 
     public int DeskCount { get => _location.DeskCount; }
 
-    public int BronzeMonitorCount 
-    { 
-        get => DeskCount - _location.MonitorGradeBronzeCount - _location.MonitorGradeSilverCount - _location.MonitorGradeGoldCount; 
+    public int BronzeMonitorCount
+    {
+        get => DeskCount - _location.MonitorGradeBronzeCount - _location.MonitorGradeSilverCount - _location.MonitorGradeGoldCount;
     }
 
     public decimal BronzeMonitorCost { get => 0; }
 
-    public int SilverMonitorCount 
-    { 
-        get => DeskCount - _location.MonitorGradeSilverCount - _location.MonitorGradeGoldCount; 
-    }
+    public int SilverMonitorCount { get => DeskCount - _location.MonitorGradeSilverCount - _location.MonitorGradeGoldCount; }
 
     public decimal SilverMonitorCost { get => SilverMonitorCount * _cost.Monitor; }
 
@@ -48,6 +45,23 @@ public sealed class Upgrade
 
     public decimal MouseCost { get => MouseCount * _cost.Mouse; }
 
-    // public int ChairCount { get; set; }
-    // public decimal Chair { get; set; }    
+    public int? ChairCount
+    {
+        get
+        {
+            if (_location.ChairCount is null)
+                return null;
+            return DeskCount - _location.ChairCount;
+        }
+    }
+
+    public decimal ChairCost
+    { 
+        get
+        {
+            if (ChairCount is null)
+                return 0;
+            return (decimal)ChairCount * _cost.Chair;
+        } 
+    }
 }

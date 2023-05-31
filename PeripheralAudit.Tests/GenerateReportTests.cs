@@ -19,9 +19,9 @@ public class GenerateReportTests
             mouse: 23,
             chair: 29
         );
-        
+
     [Fact]
-    public void UpgradeCosts_With_Empty_Desk_Returns_All_Upgrade_Costs_And_Counts()
+    public void UpgradeCosts_With_Empty_Desk_And_Null_Chair_Returns_Upgrade_Costs_And_Counts()
     {
         var options = new DbContextOptionsBuilder<PeripheralAuditDbContext>().UseSqlite("DataSource=:memory:;").Options;
         var context = new Mock<PeripheralAuditDbContext>(options);
@@ -34,6 +34,7 @@ public class GenerateReportTests
             MonitorDualCount = 0,
             KeyboardCount = 0,
             MouseCount = 0,
+            ChairCount = null
         };
 
         GenerateReport report = new(context.Object, "report output", _costs);
@@ -50,16 +51,65 @@ public class GenerateReportTests
         HtmlNode monitor = actual.Descendants("monitor").First();
         HtmlNode keyboard = actual.Descendants("keyboard").First();
         HtmlNode mouse = actual.Descendants("mouse").First();
+        HtmlNode? chair = actual.Descendants("chair").FirstOrDefault();
         HtmlNode silver = actual.Descendants("silver").First();
         HtmlNode gold = actual.Descendants("gold").First();
 
         bronze.InnerText.Should().Be($"Repopultion Costs &#163;53 - ");
-        dock.InnerText.Should().Be($"1 dock(s) @ &#163;{_costs.Dock}, ");
-        monitor.InnerText.Should().Be("1 monitor(s) @ &#163;0, ");
-        keyboard.InnerText.Should().Be($"1 keyboard(s) @ &#163;{_costs.Keyboard}, ");
-        mouse.InnerText.Should().Be($"1 mice @ &#163;{_costs.Mouse}");
-        silver.InnerText.Should().Be($"Silver Upgrade Costs &#163;{_costs.Monitor} - 1 monitor(s) @ &#163;{_costs.Monitor}");
-        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor} - 1 monitor(s) @ &#163;{_costs.LargeMonitor}");
+        dock.InnerText.Should().Be($"1 dock @ &#163;{_costs.Dock}, ");
+        monitor.InnerText.Should().Be("1 monitor @ &#163;0, ");
+        keyboard.InnerText.Should().Be($"1 keyboard @ &#163;{_costs.Keyboard}, ");
+        mouse.InnerText.Should().Be($"1 mouse @ &#163;{_costs.Mouse}, ");
+        chair.Should().BeNull();
+        silver.InnerText.Should().Be($"Silver Upgrade Costs &#163;{_costs.Monitor} - 1 monitor @ &#163;{_costs.Monitor}");
+        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
+    }
+
+    [Theory]
+    [InlineData(1, "", "mouse")]
+    [InlineData(2, "s", "mice")]
+    public void UpgradeCosts_With_Empty_Desk_Returns_All_Upgrade_Costs_And_Counts(int count, string plural, string mousePlural)
+    {
+        var options = new DbContextOptionsBuilder<PeripheralAuditDbContext>().UseSqlite("DataSource=:memory:;").Options;
+        var context = new Mock<PeripheralAuditDbContext>(options);
+        Location location = new()
+        {
+            Name = "Empty Desk",
+            DeskCount = count,
+            DockCount = 0,
+            MonitorSingleCount = 0,
+            MonitorDualCount = 0,
+            KeyboardCount = 0,
+            MouseCount = 0,
+            ChairCount = 0
+        };
+
+        GenerateReport report = new(context.Object, "report output", _costs);
+
+        HtmlNode? actual = report.UpgradeCosts(location, _costs);
+        if (actual is null)
+            Assert.Fail("Unexpectd Null returned in actual");
+
+        actual.Attributes["colspan"].Value.Should().Be("12");
+        actual.Attributes["class"].Value.Should().Be("tal");
+
+        HtmlNode bronze = actual.Descendants("bronze").First();
+        HtmlNode dock = actual.Descendants("dock").First();
+        HtmlNode monitor = actual.Descendants("monitor").First();
+        HtmlNode keyboard = actual.Descendants("keyboard").First();
+        HtmlNode mouse = actual.Descendants("mouse").First();
+        HtmlNode chair = actual.Descendants("chair").First();
+        HtmlNode silver = actual.Descendants("silver").First();
+        HtmlNode gold = actual.Descendants("gold").First();
+
+        bronze.InnerText.Should().Be($"Repopultion Costs &#163;{82 * count} - ");
+        dock.InnerText.Should().Be($"{count} dock{plural} @ &#163;{_costs.Dock}, ");
+        monitor.InnerText.Should().Be($"{count} monitor{plural} @ &#163;0, ");
+        keyboard.InnerText.Should().Be($"{count} keyboard{plural} @ &#163;{_costs.Keyboard}, ");
+        mouse.InnerText.Should().Be($"{count} {mousePlural} @ &#163;{_costs.Mouse}, ");
+        chair.InnerText.Should().Be($"{count} chair{plural} @ &#163;{_costs.Chair}");
+        silver.InnerText.Should().Be($"Silver Upgrade Costs &#163;{_costs.Monitor * count} - {count} monitor{plural} @ &#163;{_costs.Monitor}");
+        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor * count} - {count} monitor{plural} @ &#163;{_costs.LargeMonitor}");
     }
 
     [Fact]
@@ -85,8 +135,8 @@ public class GenerateReportTests
         var silver = actual.Descendants("silver").First();
         var gold = actual.Descendants("gold").First();
 
-        silver.InnerText.Should().Be($"Silver Upgrade Costs &#163;{_costs.Monitor} - 1 monitor(s) @ &#163;{_costs.Monitor}");
-        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor} - 1 monitor(s) @ &#163;{_costs.LargeMonitor}");
+        silver.InnerText.Should().Be($"Silver Upgrade Costs &#163;{_costs.Monitor} - 1 monitor @ &#163;{_costs.Monitor}");
+        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
     }
 
     [Fact]
@@ -110,7 +160,7 @@ public class GenerateReportTests
         var gold = actual.Descendants("gold").First();
 
         silver.Should().BeNull();
-        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor} - 1 monitor(s) @ &#163;{_costs.LargeMonitor}");
+        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
     }
 
     [Fact]

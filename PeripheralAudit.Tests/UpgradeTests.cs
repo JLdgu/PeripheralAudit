@@ -17,38 +17,42 @@ public class UpgradeTests
             chair: 29
         );
 
-    [Fact]
-    public void Upgrade_With_Empty_Desk_Returns_All_Costs_And_Counts()
+    [Theory]
+    [InlineData(1)]
+    [InlineData(3)]
+    public void Upgrade_With_Empty_Desk_Returns_All_Costs_And_Counts(int value)
     {
         Location location = new()
         {
             Name = "Empty Desk",
-            DeskCount = 1,
+            DeskCount = value,
         };
 
         Upgrade actual = new(_costs, location);
 
-        actual.RepopulationCost.Should().Be(_costs.Dock + 0 + _costs.Keyboard + _costs.Mouse);
-        actual.BronzeMonitorCount.Should().Be(1);
+        actual.RepopulationCost.Should().Be(value * (_costs.Dock + 0 + _costs.Keyboard + _costs.Mouse));
+        actual.BronzeMonitorCount.Should().Be(value);
         actual.BronzeMonitorCost.Should().Be(0);
-        actual.SilverMonitorCount.Should().Be(1);
-        actual.SilverMonitorCost.Should().Be(_costs.Monitor);
-        actual.GoldMonitorCount.Should().Be(1);
-        actual.GoldMonitorCost.Should().Be(_costs.LargeMonitor);
+        actual.SilverMonitorCount.Should().Be(value);
+        actual.SilverMonitorCost.Should().Be(value * _costs.Monitor);
+        actual.GoldMonitorCount.Should().Be(value);
+        actual.GoldMonitorCost.Should().Be(value * _costs.LargeMonitor);
     }
 
-    [Fact]
-    public void Upgrade_With_Silver_Desk_Returns_Gold_Costs_And_Counts()
+    [Theory]
+    [InlineData(1)]
+    [InlineData(3)]
+    public void Upgrade_With_Silver_Desk_Returns_Gold_Costs_And_Counts(int value)
     {
 
         Location location = new()
         {
             Name = "Silver Desk",
-            DeskCount = 1,
-            MonitorGradeSilverCount = 1,
-            DockCount = 1,
-            KeyboardCount = 1,
-            MouseCount = 1
+            DeskCount = value,
+            MonitorGradeSilverCount = value,
+            DockCount = value,
+            KeyboardCount = value,
+            MouseCount = value
         };
 
         Upgrade actual = new(_costs, location);
@@ -58,21 +62,23 @@ public class UpgradeTests
         actual.BronzeMonitorCost.Should().Be(0);
         actual.SilverMonitorCount.Should().Be(0);
         actual.SilverMonitorCost.Should().Be(0);
-        actual.GoldMonitorCount.Should().Be(1);
-        actual.GoldMonitorCost.Should().Be(_costs.LargeMonitor);
+        actual.GoldMonitorCount.Should().Be(value);
+        actual.GoldMonitorCost.Should().Be(value * _costs.LargeMonitor);
     }
 
-    [Fact]
-    public void Upgrade_With_Gold_Desk_Should_Have_Zero_Costs_And_Counts()
+    [Theory]
+    [InlineData(1)]
+    [InlineData(3)]
+    public void Upgrade_With_Gold_Desk_Should_Have_Zero_Costs_And_Counts(int value)
     {
         Location location = new()
         {
             Name = "Gold Desk",
-            DeskCount = 1,
-            MonitorGradeGoldCount = 1,
-            DockCount = 1,
-            KeyboardCount = 1,
-            MouseCount = 1
+            DeskCount = value,
+            MonitorGradeGoldCount = value,
+            DockCount = value,
+            KeyboardCount = value,
+            MouseCount = value
         };
 
         Upgrade actual = new(_costs, location);
@@ -214,6 +220,37 @@ public class UpgradeTests
         actual.MouseCount.Should().Be(1);
         actual.MouseCost.Should().Be(_costs.Mouse);
     }
+    [Fact]
+    public void Upgrade_With_Null_Chair_Should_Set_Null_Chair_Count_And_Zero_Chair_Cost()
+    {
+        Location location = new()
+        {
+            Name = "Null ChairCount",
+            DeskCount = 1,
+            ChairCount = null
+        };
+
+        Upgrade actual = new(_costs, location);
+
+        actual.ChairCount.Should().BeNull();
+        actual.ChairCost.Should().Be(0);
+    }
+
+    [Fact]
+    public void Upgrade_With_Chair_Should_Set_Chair_Count_And_Cost()
+    {
+        Location location = new()
+        {
+            Name = "Chair",
+            DeskCount = 1,
+            ChairCount = 0
+        };
+
+        Upgrade actual = new(_costs, location);
+
+        actual.ChairCount.Should().Be(1);
+        actual.ChairCost.Should().Be(_costs.Chair);
+    }
 
     [Fact]
     public void Upgrade_With_Multiple_Items_Should_Round_Correctly()
@@ -234,11 +271,16 @@ public class UpgradeTests
             DeskCount = 107,
             DockCount = 89,
             KeyboardCount = 75,
-            MouseCount = 68
+            MouseCount = 68,
+            ChairCount = 100
         };
 
         Upgrade actual = new(costs, location);
 
-        actual.RepopulationCost.Should().Be(4655.2m);
+        //actual.RepopulationCost.Should().Be(4655.2m);
+        actual.RepopulationCost.Should().Be((location.DeskCount - location.DockCount) * costs.Dock 
+            + (location.DeskCount - location.KeyboardCount) * costs.Keyboard
+            + (location.DeskCount - location.MouseCount) * costs.Mouse
+            + (location.DeskCount - location.ChairCount) * costs.Chair );
     }
 }
