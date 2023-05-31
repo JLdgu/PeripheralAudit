@@ -1,0 +1,3 @@
+ALTER TABLE Location
+ADD LastUpdate TEXT NOT NULL
+DEFAULT ('2023-01-01');

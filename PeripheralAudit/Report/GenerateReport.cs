@@ -33,7 +33,6 @@ public sealed class GenerateReport
         if (!sites.Any())
             return;
 
-        //List<Site> sites = _dbContext.Sites.ToList();
         foreach (Site site in sites)
         {
             IQueryable<Location> query = _dbContext.Locations.AsQueryable();
@@ -105,6 +104,8 @@ public sealed class GenerateReport
         tr[0].ChildNodes.Append(mouse);
         HtmlNode chair = TableData(location.ChairCount);
         tr[0].ChildNodes.Append(chair);
+        HtmlNode audit = TableData(location.LastUpdate.ToString());
+        tr[0].ChildNodes.Append(audit);
 
         HtmlNode? repopultionCosts = UpgradeCosts(location, costs);
         if (repopultionCosts is not null)

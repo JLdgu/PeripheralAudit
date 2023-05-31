@@ -33,4 +33,6 @@ public sealed class Location
     public int? ChairCount { get; set; }
 
     public string? Note { get; set;}
+
+    public DateOnly LastUpdate { get; set; }
 }
