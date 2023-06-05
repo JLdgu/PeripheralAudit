@@ -61,8 +61,8 @@ public class GenerateReportTests
         keyboard.InnerText.Should().Be($"1 keyboard @ &#163;{_costs.Keyboard}, ");
         mouse.InnerText.Should().Be($"1 mouse @ &#163;{_costs.Mouse}, ");
         chair.Should().BeNull();
-        silver.InnerText.Should().Be($"Silver Upgrade Costs &#163;{_costs.Monitor} - 1 monitor @ &#163;{_costs.Monitor}");
-        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
+        silver.InnerText.Should().Be($"Additional costs for upgrading to silver grade monitors &#163;{_costs.Monitor} - 1 monitor @ &#163;{_costs.Monitor}");
+        gold.InnerText.Should().Be($"Additional costs for upgrading to gold grade monitors &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
     }
 
     [Theory]
@@ -108,8 +108,8 @@ public class GenerateReportTests
         keyboard.InnerText.Should().Be($"{count} keyboard{plural} @ &#163;{_costs.Keyboard}, ");
         mouse.InnerText.Should().Be($"{count} {mousePlural} @ &#163;{_costs.Mouse}, ");
         chair.InnerText.Should().Be($"{count} chair{plural} @ &#163;{_costs.Chair}");
-        silver.InnerText.Should().Be($"Silver Upgrade Costs &#163;{_costs.Monitor * count} - {count} monitor{plural} @ &#163;{_costs.Monitor}");
-        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor * count} - {count} monitor{plural} @ &#163;{_costs.LargeMonitor}");
+        silver.InnerText.Should().Be($"Additional costs for upgrading to silver grade monitors &#163;{_costs.Monitor * count} - {count} monitor{plural} @ &#163;{_costs.Monitor}");
+        gold.InnerText.Should().Be($"Additional costs for upgrading to gold grade monitors &#163;{_costs.LargeMonitor * count} - {count} monitor{plural} @ &#163;{_costs.LargeMonitor}");
     }
 
     [Fact]
@@ -135,8 +135,8 @@ public class GenerateReportTests
         var silver = actual.Descendants("silver").First();
         var gold = actual.Descendants("gold").First();
 
-        silver.InnerText.Should().Be($"Silver Upgrade Costs &#163;{_costs.Monitor} - 1 monitor @ &#163;{_costs.Monitor}");
-        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
+        silver.InnerText.Should().Be($"Additional costs for upgrading to silver grade monitors &#163;{_costs.Monitor} - 1 monitor @ &#163;{_costs.Monitor}");
+        gold.InnerText.Should().Be($"Additional costs for upgrading to gold grade monitors &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class GenerateReportTests
         var gold = actual.Descendants("gold").First();
 
         silver.Should().BeNull();
-        gold.InnerText.Should().Be($"Gold Upgrade Costs &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
+        gold.InnerText.Should().Be($"Additional costs for upgrading to gold grade monitors &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
     }
 
     [Fact]

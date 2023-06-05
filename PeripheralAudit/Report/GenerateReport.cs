@@ -213,7 +213,7 @@ public sealed class GenerateReport
         if (upgrade.SilverMonitorCount > 0)
         {
             HtmlNode silver = _template.CreateElement(nameof(silver));
-            silver.InnerHtml = $"{htmlBreak}Silver Upgrade Costs &#163;{upgrade.SilverMonitorCost} - {upgrade.SilverMonitorCount} monitor{Pluralise(upgrade.SilverMonitorCount)} @ &#163;{_costs.Monitor}";
+            silver.InnerHtml = $"{htmlBreak}Additional costs for upgrading to silver grade monitors &#163;{upgrade.SilverMonitorCost} - {upgrade.SilverMonitorCount} monitor{Pluralise(upgrade.SilverMonitorCount)} @ &#163;{_costs.Monitor}";
             upgradeData.AppendChild(silver);
 
             htmlBreak = "<br />";
@@ -222,7 +222,7 @@ public sealed class GenerateReport
         if (upgrade.GoldMonitorCount > 0)
         {
             HtmlNode gold = _template.CreateElement(nameof(gold));
-            gold.InnerHtml = $"{htmlBreak}Gold Upgrade Costs &#163;{upgrade.GoldMonitorCost} - {upgrade.GoldMonitorCount} monitor{Pluralise(upgrade.GoldMonitorCount)} @ &#163;{_costs.LargeMonitor}";
+            gold.InnerHtml = $"{htmlBreak}Additional costs for upgrading to gold grade monitors &#163;{upgrade.GoldMonitorCost} - {upgrade.GoldMonitorCount} monitor{Pluralise(upgrade.GoldMonitorCount)} @ &#163;{_costs.LargeMonitor}";
             upgradeData.AppendChild(gold);
         }
 
