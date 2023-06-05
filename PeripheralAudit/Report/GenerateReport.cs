@@ -66,6 +66,8 @@ public sealed class GenerateReport
             foreach (Location location in locations)
             {
                 HtmlNode[] newRow = ReportRow(location, _costs);
+                if (newRow[2] is not null)
+                    reportTable.InsertAfter(newRow[2], reportRow);
                 if (newRow[1] is not null)
                     reportTable.InsertAfter(newRow[1], reportRow);
                 reportTable.InsertAfter(newRow[0], reportRow);
@@ -77,7 +79,7 @@ public sealed class GenerateReport
 
     private HtmlNode[] ReportRow(Location location, Cost costs)
     {
-        HtmlNode[] tr = new HtmlNode[2];
+        HtmlNode[] tr = new HtmlNode[3];
 
         tr[0] = _template.CreateElement("tr");
         HtmlNode name = TableData(location.Name, classAttribute: "tal");
@@ -107,14 +109,24 @@ public sealed class GenerateReport
         HtmlNode audit = TableData(location.LastUpdate.ToString());
         tr[0].ChildNodes.Append(audit);
 
-        HtmlNode? repopultionCosts = UpgradeCosts(location, costs);
-        if (repopultionCosts is not null)
+        if (location.Note is not null)
         {
             tr[1] = _template.CreateElement("tr");
             HtmlNode noBorderNoBackground = TableData("", classAttribute: "nbnb");
             tr[1].ChildNodes.Append(noBorderNoBackground);
 
-            tr[1].ChildNodes.Append(repopultionCosts);
+            HtmlNode note = TableData(location.Note,12,"tal");
+            tr[1].ChildNodes.Append(note);
+        }
+
+        HtmlNode? repopultionCosts = UpgradeCosts(location, costs);
+        if (repopultionCosts is not null)
+        {
+            tr[2] = _template.CreateElement("tr");
+            HtmlNode noBorderNoBackground = TableData("", classAttribute: "nbnb");
+            tr[2].ChildNodes.Append(noBorderNoBackground);
+
+            tr[2].ChildNodes.Append(repopultionCosts);
         }
 
         return tr;
