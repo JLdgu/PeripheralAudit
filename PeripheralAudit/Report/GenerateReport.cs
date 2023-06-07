@@ -66,7 +66,8 @@ public sealed class GenerateReport
             foreach (Location location in locations)
             {
                 HtmlNode[] newRow = ReportRow(location, _costs);
-                if (newRow[2] is not null)
+                reportTable.InsertAfter(newRow[3], reportRow);
+                if (newRow[2] is not null && newRow[2].InnerText != string.Empty)
                     reportTable.InsertAfter(newRow[2], reportRow);
                 if (newRow[1] is not null)
                     reportTable.InsertAfter(newRow[1], reportRow);
@@ -79,55 +80,53 @@ public sealed class GenerateReport
 
     private HtmlNode[] ReportRow(Location location, Cost costs)
     {
-        HtmlNode[] tr = new HtmlNode[3];
+        HtmlNode[] tr = new HtmlNode[4];
 
         tr[0] = _template.CreateElement("tr");
-        HtmlNode name = TableData(location.Name, classAttribute: "tal");
-        tr[0].ChildNodes.Append(name);
-        HtmlNode desks = TableData(location.DeskCount);
-        tr[0].ChildNodes.Append(desks);
-        HtmlNode single = TableData(location.MonitorSingleCount);
-        tr[0].ChildNodes.Append(single);
-        HtmlNode dual = TableData(location.MonitorDualCount);
-        tr[0].ChildNodes.Append(dual);
-        HtmlNode bronze = TableData(location.MonitorGradeBronzeCount);
-        tr[0].ChildNodes.Append(bronze);
-        HtmlNode silver = TableData(location.MonitorGradeSilverCount);
-        tr[0].ChildNodes.Append(silver);
-        HtmlNode gold = TableData(location.MonitorGradeGoldCount);
-        tr[0].ChildNodes.Append(gold);
-        HtmlNode dock = TableData(location.DockCount);
-        tr[0].ChildNodes.Append(dock);
-        HtmlNode pc = TableData(location.PcCount);
-        tr[0].ChildNodes.Append(pc);
-        HtmlNode keyboard = TableData(location.KeyboardCount);
-        tr[0].ChildNodes.Append(keyboard);
-        HtmlNode mouse = TableData(location.MouseCount);
-        tr[0].ChildNodes.Append(mouse);
-        HtmlNode chair = TableData(location.ChairCount);
-        tr[0].ChildNodes.Append(chair);
-        HtmlNode audit = TableData(location.LastUpdate.ToString());
-        tr[0].ChildNodes.Append(audit);
-
+        string row = location.Name;
         if (location.Note is not null)
         {
-            tr[1] = _template.CreateElement("tr");
-            HtmlNode noBorderNoBackground = TableData("", classAttribute: "nbnb");
-            tr[1].ChildNodes.Append(noBorderNoBackground);
-
-            HtmlNode note = TableData(location.Note,12,"tal");
-            tr[1].ChildNodes.Append(note);
+            row = row + " - " + location.Note;
         }
+        HtmlNode name = TableData(row, 12,"tal");
+        tr[0].ChildNodes.Append(name);
+
+        tr[1] = _template.CreateElement("tr");
+        HtmlNode desks = TableData(location.DeskCount);
+        tr[1].ChildNodes.Append(desks);
+        HtmlNode single = TableData(location.MonitorSingleCount);
+        tr[1].ChildNodes.Append(single);
+        HtmlNode dual = TableData(location.MonitorDualCount);
+        tr[1].ChildNodes.Append(dual);
+        HtmlNode bronze = TableData(location.MonitorGradeBronzeCount);
+        tr[1].ChildNodes.Append(bronze);
+        HtmlNode silver = TableData(location.MonitorGradeSilverCount);
+        tr[1].ChildNodes.Append(silver);
+        HtmlNode gold = TableData(location.MonitorGradeGoldCount);
+        tr[1].ChildNodes.Append(gold);
+        HtmlNode dock = TableData(location.DockCount);
+        tr[1].ChildNodes.Append(dock);
+        HtmlNode pc = TableData(location.PcCount);
+        tr[1].ChildNodes.Append(pc);
+        HtmlNode keyboard = TableData(location.KeyboardCount);
+        tr[1].ChildNodes.Append(keyboard);
+        HtmlNode mouse = TableData(location.MouseCount);
+        tr[1].ChildNodes.Append(mouse);
+        HtmlNode chair = TableData(location.ChairCount);
+        tr[1].ChildNodes.Append(chair);
+        HtmlNode audit = TableData(location.LastUpdate.ToString());
+        tr[1].ChildNodes.Append(audit);
 
         HtmlNode? repopultionCosts = UpgradeCosts(location, costs);
         if (repopultionCosts is not null)
         {
             tr[2] = _template.CreateElement("tr");
-            HtmlNode noBorderNoBackground = TableData("", classAttribute: "nbnb");
-            tr[2].ChildNodes.Append(noBorderNoBackground);
-
             tr[2].ChildNodes.Append(repopultionCosts);
         }
+
+        tr[3] = _template.CreateElement("tr");
+        HtmlNode lineBreak = TableData("",13,"nbnb");
+        tr[3].ChildNodes.Append(lineBreak);
 
         return tr;
     }
@@ -137,15 +136,13 @@ public sealed class GenerateReport
         return TableData(content.ToString() ?? string.Empty);
     }
 
-    private HtmlNode TableData(string content, int? colSpan = null, string? classAttribute = null, string? style = null)
+    private HtmlNode TableData(string content, int? colSpan = null, string? classAttribute = null)
     {
         HtmlNode tableData = _template.CreateElement("td");
         if (colSpan is not null)
             tableData.Attributes.Add("colspan", colSpan.ToString());
         if (classAttribute is not null)
             tableData.Attributes.Add("class", classAttribute);
-        if (style is not null)
-            tableData.Attributes.Add("style", style);
         tableData.InnerHtml = content;
         return tableData;
     }
