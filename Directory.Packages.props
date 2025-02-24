@@ -17,7 +17,7 @@
   This would typically list all NuGet packages used within this solution.
   -->
   <ItemGroup>
-	  <PackageVersion Include="FluentAssertions" Version="[7.0.0]" />
+	  <PackageVersion Include="FluentAssertions" Version="[8.1.1]" />
 	  <PackageVersion Include="HtmlAgilityPack" Version="1.11.72" />
 	  <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.1" />
 	  <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="9.0.1" />
