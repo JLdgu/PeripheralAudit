@@ -10,5 +10,4 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
-      - dependency-name: 'FluentAssertions'
-        versions: ['8.*']
+      - dependency-name: "FluentAssertions"
