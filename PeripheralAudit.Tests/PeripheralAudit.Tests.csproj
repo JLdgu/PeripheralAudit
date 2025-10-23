@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" VersionOverride="9.0.10" />
     <ProjectReference Include="..\PeripheralAudit\PeripheralAudit.csproj" />
   </ItemGroup>
 
