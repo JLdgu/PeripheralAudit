@@ -20,7 +20,7 @@ public class GenerateReportTests
             chair: 29
         );
 
-    [Fact]
+    [Test]
     public void UpgradeCosts_With_Empty_Desk_And_Null_Chair_Returns_Upgrade_Costs_And_Counts()
     {
         var options = new DbContextOptionsBuilder<PeripheralAuditDbContext>().UseSqlite("DataSource=:memory:;").Options;
@@ -65,9 +65,9 @@ public class GenerateReportTests
         gold.InnerText.Should().Be($"Additional costs for upgrading to gold grade monitors &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
     }
 
-    [Theory]
-    [InlineData(1, "", "mouse")]
-    [InlineData(2, "s", "mice")]
+    [Test]
+    [Arguments(1, "", "mouse")]
+    [Arguments(2, "s", "mice")]
     public void UpgradeCosts_With_Empty_Desk_Returns_All_Upgrade_Costs_And_Counts(int count, string plural, string mousePlural)
     {
         var options = new DbContextOptionsBuilder<PeripheralAuditDbContext>().UseSqlite("DataSource=:memory:;").Options;
@@ -112,7 +112,7 @@ public class GenerateReportTests
         gold.InnerText.Should().Be($"Additional costs for upgrading to gold grade monitors &#163;{_costs.LargeMonitor * count} - {count} monitor{plural} @ &#163;{_costs.LargeMonitor}");
     }
 
-    [Fact]
+    [Test]
     public void UpgradeCosts_With_Complete_Bronze_Desk_Returns_Silver_And_Gold_Upgrade_Cost_And_Count()
     {
         var options = new DbContextOptionsBuilder<PeripheralAuditDbContext>().UseSqlite("DataSource=:memory:;").Options;
@@ -139,7 +139,7 @@ public class GenerateReportTests
         gold.InnerText.Should().Be($"Additional costs for upgrading to gold grade monitors &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
     }
 
-    [Fact]
+    [Test]
     public void UpgradeCosts_With_Silver_Desk_Returns_Only_Gold_Upgrade_Cost_And_Count()
     {
         var options = new DbContextOptionsBuilder<PeripheralAuditDbContext>().UseSqlite("DataSource=:memory:;").Options;
@@ -163,7 +163,7 @@ public class GenerateReportTests
         gold.InnerText.Should().Be($"Additional costs for upgrading to gold grade monitors &#163;{_costs.LargeMonitor} - 1 monitor @ &#163;{_costs.LargeMonitor}");
     }
 
-    [Fact]
+    [Test]
     public void UpgradeCosts_With_All_Gold_Desks_Returns_Null()
     {
         var options = new DbContextOptionsBuilder<PeripheralAuditDbContext>().UseSqlite("DataSource=:memory:;").Options;
