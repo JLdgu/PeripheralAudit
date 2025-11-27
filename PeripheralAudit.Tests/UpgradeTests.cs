@@ -17,9 +17,9 @@ public class UpgradeTests
             chair: 29
         );
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(3)]
+    [Test]
+    [Arguments(1)]
+    [Arguments(3)]
     public void Upgrade_With_Empty_Desk_Returns_All_Costs_And_Counts(int value)
     {
         Location location = new()
@@ -39,9 +39,9 @@ public class UpgradeTests
         actual.GoldMonitorCost.Should().Be(value * _costs.LargeMonitor);
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(3)]
+    [Test]
+    [Arguments(1)]
+    [Arguments(3)]
     public void Upgrade_With_Silver_Desk_Returns_Gold_Costs_And_Counts(int value)
     {
 
@@ -66,9 +66,9 @@ public class UpgradeTests
         actual.GoldMonitorCost.Should().Be(value * _costs.LargeMonitor);
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(3)]
+    [Test]
+    [Arguments(1)]
+    [Arguments(3)]
     public void Upgrade_With_Gold_Desk_Should_Have_Zero_Costs_And_Counts(int value)
     {
         Location location = new()
@@ -92,7 +92,7 @@ public class UpgradeTests
         actual.GoldMonitorCost.Should().Be(0);
     }
 
-    [Fact]
+    [Test]
     public void Upgrade_With_Dock_Should_Set_Zero_Dock_Count_And_Cost()
     {
         Location location = new()
@@ -108,7 +108,7 @@ public class UpgradeTests
         actual.DockCost.Should().Be(0);
     }
 
-    [Fact]
+    [Test]
     public void Upgrade_With_PC_Should_Set_Zero_Dock_Count_And_Cost()
     {
         Location location = new()
@@ -124,7 +124,7 @@ public class UpgradeTests
         actual.DockCost.Should().Be(0);
     }
 
-    [Fact]
+    [Test]
     public void Upgrade_With_Dock_And_PC_Should_Set_Zero_Dock_Count_And_Cost()
     {
         Location location = new()
@@ -141,7 +141,7 @@ public class UpgradeTests
         actual.DockCost.Should().Be(0);
     }
 
-    [Fact]
+    [Test]
     public void Upgrade_With_Missing_Dock_Should_Set_Dock_Count_And_Cost()
     {
         Location location = new()
@@ -157,7 +157,7 @@ public class UpgradeTests
         actual.DockCost.Should().Be(_costs.Dock);
     }
 
-    [Fact]
+    [Test]
     public void Upgrade_With_Keyboard_Should_Set_Zero_Keyboard_Count_And_Cost()
     {
         Location location = new()
@@ -173,7 +173,7 @@ public class UpgradeTests
         actual.KeyboardCost.Should().Be(0);
     }
 
-    [Fact]
+    [Test]
     public void Upgrade_With_Missing_Keyboard_Should_Set_Keyboard_Count_And_Cost()
     {
         Location location = new()
@@ -189,7 +189,7 @@ public class UpgradeTests
         actual.KeyboardCost.Should().Be(_costs.Keyboard);
     }
 
-    [Fact]
+    [Test]
     public void Upgrade_With_Mouse_Should_Set_Zero_Mouse_Count_And_Cost()
     {
         Location location = new()
@@ -205,7 +205,7 @@ public class UpgradeTests
         actual.MouseCost.Should().Be(0);
     }
 
-    [Fact]
+    [Test]
     public void Upgrade_With_Missing_Mouse_Should_Set_Mouse_Count_And_Cost()
     {
         Location location = new()
@@ -220,7 +220,7 @@ public class UpgradeTests
         actual.MouseCount.Should().Be(1);
         actual.MouseCost.Should().Be(_costs.Mouse);
     }
-    [Fact]
+    [Test]
     public void Upgrade_With_Null_Chair_Should_Set_Null_Chair_Count_And_Zero_Chair_Cost()
     {
         Location location = new()
@@ -236,7 +236,7 @@ public class UpgradeTests
         actual.ChairCost.Should().Be(0);
     }
 
-    [Fact]
+    [Test]
     public void Upgrade_With_Chair_Should_Set_Chair_Count_And_Cost()
     {
         Location location = new()
@@ -252,7 +252,7 @@ public class UpgradeTests
         actual.ChairCost.Should().Be(_costs.Chair);
     }
 
-    [Fact]
+    [Test]
     public void Upgrade_With_Multiple_Items_Should_Round_Correctly()
     {
         Cost costs = new
