@@ -140,9 +140,9 @@ public sealed class GenerateReport
     {
         HtmlNode tableData = _template.CreateElement("td");
         if (colSpan is not null)
-            tableData.Attributes.Add("colspan", colSpan.ToString());
+            tableData.Attributes.Add("colspan", colSpan.ToString()!); 
         if (classAttribute is not null)
-            tableData.Attributes.Add("class", classAttribute);
+            tableData.Attributes.Add("class", classAttribute!); 
         tableData.InnerHtml = content;
         return tableData;
     }

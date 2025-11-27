@@ -19,34 +19,37 @@ PeripheralAuditDbContext dbContext = host.Services.GetRequiredService<Peripheral
 dbContext.Database.EnsureCreated();
 //dbContext.Database.Migrate();
 
-var rootCommand = new RootCommand("PeripheralAudit report generation");
-var siteOption = new Option<string>(
-     name: "--site",      
-     description: "Site Filter or ALL",
-     getDefaultValue: () => "ALL");
-siteOption.AddAlias("-s");
-rootCommand.AddOption(siteOption);
-var locationOption = new Option<string>(
-     name: "--location",      
-     description: "Location Filter or ALL",
-     getDefaultValue: () => "ALL");
-locationOption.AddAlias("-l");
-rootCommand.AddOption(locationOption);
-rootCommand.SetHandler( (site, location) =>
+RootCommand rootCommand = new("PeripheralAudit report generation");
+Option<string> siteOption = new("--site", "-s")
 {
-    GenerateReport report = new(dbContext, _reportOutput, _costs);
-    report.Execute(site, location);
-},
-siteOption, locationOption);
+    Description = "Site Filter or ALL",
+    DefaultValueFactory = _ => "ALL"
+};
+rootCommand.Add(siteOption);
 
-var scriptCommand = new Command("dbscript","Generate Database Script");
-scriptCommand.SetHandler( () => 
+Option<string> locationOption = new("--location", "-l")
+{
+    Description = "Location Filter or ALL",
+    DefaultValueFactory = _ => "ALL"
+};
+rootCommand.Add(locationOption);
+
+rootCommand.SetAction( parseResult =>
+{
+    var site = parseResult.GetValue(siteOption);
+    var location = parseResult.GetValue(locationOption);
+    GenerateReport report = new(dbContext, _reportOutput, _costs);
+    report.Execute(site!, location!);
+});
+
+Command scriptCommand = new("dbscript","Generate Database Script");
+scriptCommand.SetAction( _ => 
 {    
     GenerateDBScript(_scriptOutput);
 });
-rootCommand.AddCommand(scriptCommand);
+rootCommand.Add(scriptCommand);
 
-return rootCommand.Invoke(args);
+return rootCommand.Parse(args).Invoke();
 
 void ConfigureAppSettings(HostBuilderContext context, IServiceCollection collection)
 {

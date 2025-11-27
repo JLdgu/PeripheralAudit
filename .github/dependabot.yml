@@ -11,4 +11,5 @@ updates:
       interval: "weekly"
     ignore:
       - dependency-name: "FluentAssertions"
-      - dependency-name: "System.CommandLine"
+        versions:
+          - "8.*"
