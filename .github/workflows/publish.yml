@@ -10,7 +10,7 @@ defaults:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
 
@@ -37,6 +37,7 @@ jobs:
               Write-Host "ERROR: Could not read version from PeripheralAudit.csproj" -ForegroundColor Red
               exit 1
           }
+          Write-Host "Publishing PeripheralAudit version $Version" -ForegroundColor Green
 
           dotnet tool install -g vpk
 
@@ -46,7 +47,6 @@ jobs:
               -v $Version `
               -p .\publish `
               -e PeripheralAudit.exe `
-              -i PeripheralAudit\Resources\Phone.ico `
               --packAuthors "Devon County Council" `
               --noPortable 
             

@@ -4,6 +4,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PeripheralAudit.Application;
 using PeripheralAudit.Report;
+using Velopack;
+
+VelopackApp.Build().Run();
+
+var mgr = new UpdateManager("https://github.com/JLdgu/PeripheralAudit");
+
+var newVersion = await mgr.CheckForUpdatesAsync();
+if (newVersion is not null)
+{
+    await mgr.DownloadUpdatesAsync(newVersion);
+    mgr.ApplyUpdatesAndRestart(newVersion);
+    return 0;
+}
 
 string? _reportOutput = string.Empty;
 string? _scriptOutput = string.Empty;
