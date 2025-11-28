@@ -7,6 +7,9 @@ defaults:
   run:
     shell: pwsh
 
+permissions:
+  contents: write
+
 jobs:
   build:
 
@@ -51,4 +54,4 @@ jobs:
               --noPortable 
             
           vpk upload github --repoUrl "${{ github.server_url }}/${{ github.repository }}" `
-              --publish --merge --tag "$Version" --releaseName "Release $Version"
+              --publish --merge --tag "v$Version" --releaseName "Release $Version"
