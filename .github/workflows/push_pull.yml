@@ -1,0 +1,32 @@
+
+name: Push and Pull Requests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dotnet CI
+        uses: ./.github/actions/dotnet-ci
+        with:
+          dotnet-version: 10.0.x
+      
+  automerge:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3
