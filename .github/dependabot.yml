@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "nuget" # update .NET dependencies
     directory: "/" 
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     ignore:
       - dependency-name: "FluentAssertions"
         versions:
@@ -12,7 +12,7 @@ updates:
   - package-ecosystem: "github-actions" # update GitHub Actions workflows
     directory: "/" 
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     groups:
       github-actions:
         patterns:
