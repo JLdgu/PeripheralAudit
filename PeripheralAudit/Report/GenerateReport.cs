@@ -40,7 +40,7 @@ public sealed class GenerateReport
                          .OrderByDescending(l => l.Name);
             if (locationFilter != "ALL")
                 query = query.Where(l => l.Name.Contains(locationFilter));
-            List<Location> locations = query.ToList();
+            List<Location> locations = [.. query];
 
             if (!locations.Any())
                 continue;
@@ -51,27 +51,27 @@ public sealed class GenerateReport
 
             _template.Load(htmlTemplate);
 
-            string reportDate = _template.GetElementbyId("reportDate").InnerHtml;
+            //string reportDate = _template.GetElementbyId("reportDate").InnerHtml;
 
-            HtmlNode reportDateDiv = _template.DocumentNode.SelectSingleNode("//div[@id='reportDate']");
-            reportDateDiv.InnerHtml = $"Report produced: {DateTime.Now.ToLongDateString()}";
+            HtmlNode? reportDateDiv = _template.DocumentNode.SelectSingleNode("//div[@id='reportDate']");
+            reportDateDiv?.InnerHtml = $"Report produced: {DateTime.Now:D}";
 
-            HtmlNode reportSite = _template.DocumentNode.SelectSingleNode("//div[@id='reportSite']");
-            reportSite.InnerHtml = site.Name;
+            HtmlNode? reportSite = _template.DocumentNode.SelectSingleNode("//div[@id='reportSite']");
+            reportSite?.InnerHtml = site.Name;
 
-            HtmlNode reportTable = _template.DocumentNode.SelectSingleNode("//table[@id='reportTable']");
+            HtmlNode? reportTable = _template.DocumentNode.SelectSingleNode("//table[@id='reportTable']");
 
-            HtmlNode reportRow = _template.DocumentNode.SelectSingleNode("//tr[@id='reportHeader']");
+            HtmlNode? reportRow = _template.DocumentNode.SelectSingleNode("//tr[@id='reportHeader']");
 
             foreach (Location location in locations)
             {
                 HtmlNode[] newRow = ReportRow(location, _costs);
-                reportTable.InsertAfter(newRow[3], reportRow);
+                reportTable?.InsertAfter(newRow[3], reportRow);
                 if (newRow[2] is not null && newRow[2].InnerText != string.Empty)
-                    reportTable.InsertAfter(newRow[2], reportRow);
+                    reportTable?.InsertAfter(newRow[2], reportRow);
                 if (newRow[1] is not null)
-                    reportTable.InsertAfter(newRow[1], reportRow);
-                reportTable.InsertAfter(newRow[0], reportRow);
+                    reportTable?.InsertAfter(newRow[1], reportRow);
+                reportTable?.InsertAfter(newRow[0], reportRow);
             }
 
             _template.Save(htmlOutput);
