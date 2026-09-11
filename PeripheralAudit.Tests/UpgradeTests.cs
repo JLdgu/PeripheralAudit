@@ -1,13 +1,12 @@
-using FluentAssertions;
 using PeripheralAudit.Application;
 using PeripheralAudit.Application.Entities;
 using PeripheralAudit.Report;
 
 namespace PeripheralAudit.Tests;
 
-public class UpgradeTests
+internal sealed class UpgradeTests
 {
-    Cost _costs = new
+    readonly Cost _costs = new
         (
             dock: 11,
             monitor: 13,
@@ -20,7 +19,7 @@ public class UpgradeTests
     [Test]
     [Arguments(1)]
     [Arguments(3)]
-    public void Upgrade_With_Empty_Desk_Returns_All_Costs_And_Counts(int value)
+    internal async Task Upgrade_With_Empty_Desk_Returns_All_Costs_And_Counts(int value)
     {
         Location location = new()
         {
@@ -30,19 +29,19 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.RepopulationCost.Should().Be(value * (_costs.Dock + 0 + _costs.Keyboard + _costs.Mouse));
-        actual.BronzeMonitorCount.Should().Be(value);
-        actual.BronzeMonitorCost.Should().Be(0);
-        actual.SilverMonitorCount.Should().Be(value);
-        actual.SilverMonitorCost.Should().Be(value * _costs.Monitor);
-        actual.GoldMonitorCount.Should().Be(value);
-        actual.GoldMonitorCost.Should().Be(value * _costs.LargeMonitor);
+        await Assert.That(actual.RepopulationCost).IsEqualTo(value * (_costs.Dock + 0 + _costs.Keyboard + _costs.Mouse));
+        await Assert.That(actual.BronzeMonitorCount).IsEqualTo(value);
+        await Assert.That(actual.BronzeMonitorCost).IsEqualTo(0);
+        await Assert.That(actual.SilverMonitorCount).IsEqualTo(value);
+        await Assert.That(actual.SilverMonitorCost).IsEqualTo(value * _costs.Monitor);
+        await Assert.That(actual.GoldMonitorCount).IsEqualTo(value);
+        await Assert.That(actual.GoldMonitorCost).IsEqualTo(value * _costs.LargeMonitor);
     }
 
     [Test]
     [Arguments(1)]
     [Arguments(3)]
-    public void Upgrade_With_Silver_Desk_Returns_Gold_Costs_And_Counts(int value)
+    internal async Task Upgrade_With_Silver_Desk_Returns_Gold_Costs_And_Counts(int value)
     {
 
         Location location = new()
@@ -57,19 +56,19 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.RepopulationCost.Should().Be(0);
-        actual.BronzeMonitorCount.Should().Be(0);
-        actual.BronzeMonitorCost.Should().Be(0);
-        actual.SilverMonitorCount.Should().Be(0);
-        actual.SilverMonitorCost.Should().Be(0);
-        actual.GoldMonitorCount.Should().Be(value);
-        actual.GoldMonitorCost.Should().Be(value * _costs.LargeMonitor);
+        await Assert.That(actual.RepopulationCost).IsEqualTo(0);
+        await Assert.That(actual.BronzeMonitorCount).IsEqualTo(0);
+        await Assert.That(actual.BronzeMonitorCost).IsEqualTo(0);
+        await Assert.That(actual.SilverMonitorCount).IsEqualTo(0);
+        await Assert.That(actual.SilverMonitorCost).IsEqualTo(0);
+        await Assert.That(actual.GoldMonitorCount).IsEqualTo(value);
+        await Assert.That(actual.GoldMonitorCost).IsEqualTo(value * _costs.LargeMonitor);
     }
 
     [Test]
     [Arguments(1)]
     [Arguments(3)]
-    public void Upgrade_With_Gold_Desk_Should_Have_Zero_Costs_And_Counts(int value)
+    internal async Task Upgrade_With_Gold_Desk_Should_Have_Zero_Costs_And_Counts(int value)
     {
         Location location = new()
         {
@@ -83,17 +82,17 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.RepopulationCost.Should().Be(0);
-        actual.BronzeMonitorCount.Should().Be(0);
-        actual.BronzeMonitorCost.Should().Be(0);
-        actual.SilverMonitorCount.Should().Be(0);
-        actual.SilverMonitorCost.Should().Be(0);
-        actual.GoldMonitorCount.Should().Be(0);
-        actual.GoldMonitorCost.Should().Be(0);
+        await Assert.That(actual.RepopulationCost).IsEqualTo(0);
+        await Assert.That(actual.BronzeMonitorCount).IsEqualTo(0);
+        await Assert.That(actual.BronzeMonitorCost).IsEqualTo(0);
+        await Assert.That(actual.SilverMonitorCount).IsEqualTo(0);
+        await Assert.That(actual.SilverMonitorCost).IsEqualTo(0);
+        await Assert.That(actual.GoldMonitorCount).IsEqualTo(0);
+        await Assert.That(actual.GoldMonitorCost).IsEqualTo(0);
     }
 
     [Test]
-    public void Upgrade_With_Dock_Should_Set_Zero_Dock_Count_And_Cost()
+    internal async Task Upgrade_With_Dock_Should_Set_Zero_Dock_Count_And_Cost()
     {
         Location location = new()
         {
@@ -104,12 +103,12 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.DockCount.Should().Be(0);
-        actual.DockCost.Should().Be(0);
+        await Assert.That(actual.DockCount).IsEqualTo(0);
+        await Assert.That(actual.DockCost).IsEqualTo(0);
     }
 
     [Test]
-    public void Upgrade_With_PC_Should_Set_Zero_Dock_Count_And_Cost()
+    internal async Task Upgrade_With_PC_Should_Set_Zero_Dock_Count_And_Cost()
     {
         Location location = new()
         {
@@ -120,12 +119,12 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.DockCount.Should().Be(0);
-        actual.DockCost.Should().Be(0);
+        await Assert.That(actual.DockCount).IsEqualTo(0);
+        await Assert.That(actual.DockCost).IsEqualTo(0);
     }
 
     [Test]
-    public void Upgrade_With_Dock_And_PC_Should_Set_Zero_Dock_Count_And_Cost()
+    internal async Task Upgrade_With_Dock_And_PC_Should_Set_Zero_Dock_Count_And_Cost()
     {
         Location location = new()
         {
@@ -137,12 +136,12 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.DockCount.Should().Be(0);
-        actual.DockCost.Should().Be(0);
+        await Assert.That(actual.DockCount).IsEqualTo(0);
+        await Assert.That(actual.DockCost).IsEqualTo(0);
     }
 
     [Test]
-    public void Upgrade_With_Missing_Dock_Should_Set_Dock_Count_And_Cost()
+    internal async Task Upgrade_With_Missing_Dock_Should_Set_Dock_Count_And_Cost()
     {
         Location location = new()
         {
@@ -153,12 +152,12 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.DockCount.Should().Be(1);
-        actual.DockCost.Should().Be(_costs.Dock);
+        await Assert.That(actual.DockCount).IsEqualTo(1);
+        await Assert.That(actual.DockCost).IsEqualTo(_costs.Dock);
     }
 
     [Test]
-    public void Upgrade_With_Keyboard_Should_Set_Zero_Keyboard_Count_And_Cost()
+    internal async Task Upgrade_With_Keyboard_Should_Set_Zero_Keyboard_Count_And_Cost()
     {
         Location location = new()
         {
@@ -169,12 +168,12 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.KeyboardCount.Should().Be(0);
-        actual.KeyboardCost.Should().Be(0);
+        await Assert.That(actual.KeyboardCount).IsEqualTo(0);
+        await Assert.That(actual.KeyboardCost).IsEqualTo(0);
     }
 
     [Test]
-    public void Upgrade_With_Missing_Keyboard_Should_Set_Keyboard_Count_And_Cost()
+    internal async Task Upgrade_With_Missing_Keyboard_Should_Set_Keyboard_Count_And_Cost()
     {
         Location location = new()
         {
@@ -185,12 +184,12 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.KeyboardCount.Should().Be(1);
-        actual.KeyboardCost.Should().Be(_costs.Keyboard);
+        await Assert.That(actual.KeyboardCount).IsEqualTo(1);
+        await Assert.That(actual.KeyboardCost).IsEqualTo(_costs.Keyboard);
     }
 
     [Test]
-    public void Upgrade_With_Mouse_Should_Set_Zero_Mouse_Count_And_Cost()
+    internal async Task Upgrade_With_Mouse_Should_Set_Zero_Mouse_Count_And_Cost()
     {
         Location location = new()
         {
@@ -201,12 +200,12 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.MouseCount.Should().Be(0);
-        actual.MouseCost.Should().Be(0);
+        await Assert.That(actual.MouseCount).IsEqualTo(0);
+        await Assert.That(actual.MouseCost).IsEqualTo(0);
     }
 
     [Test]
-    public void Upgrade_With_Missing_Mouse_Should_Set_Mouse_Count_And_Cost()
+    internal async Task Upgrade_With_Missing_Mouse_Should_Set_Mouse_Count_And_Cost()
     {
         Location location = new()
         {
@@ -217,11 +216,12 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.MouseCount.Should().Be(1);
-        actual.MouseCost.Should().Be(_costs.Mouse);
+        await Assert.That(actual.MouseCount).IsEqualTo(1);
+        await Assert.That(actual.MouseCost).IsEqualTo(_costs.Mouse);
     }
+
     [Test]
-    public void Upgrade_With_Null_Chair_Should_Set_Null_Chair_Count_And_Zero_Chair_Cost()
+    internal async Task Upgrade_With_Null_Chair_Should_Set_Null_Chair_Count_And_Zero_Chair_Cost()
     {
         Location location = new()
         {
@@ -232,12 +232,12 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.ChairCount.Should().BeNull();
-        actual.ChairCost.Should().Be(0);
+        await Assert.That(actual.ChairCount).IsNull();
+        await Assert.That(actual.ChairCost).IsEqualTo(0);
     }
 
     [Test]
-    public void Upgrade_With_Chair_Should_Set_Chair_Count_And_Cost()
+    internal async Task Upgrade_With_Chair_Should_Set_Chair_Count_And_Cost()
     {
         Location location = new()
         {
@@ -248,12 +248,12 @@ public class UpgradeTests
 
         Upgrade actual = new(_costs, location);
 
-        actual.ChairCount.Should().Be(1);
-        actual.ChairCost.Should().Be(_costs.Chair);
+        await Assert.That(actual.ChairCount).IsEqualTo(1);
+        await Assert.That(actual.ChairCost).IsEqualTo(_costs.Chair);
     }
 
     [Test]
-    public void Upgrade_With_Multiple_Items_Should_Round_Correctly()
+    internal async Task Upgrade_With_Multiple_Items_Should_Round_Correctly()
     {
         Cost costs = new
         (
@@ -277,8 +277,7 @@ public class UpgradeTests
 
         Upgrade actual = new(costs, location);
 
-        //actual.RepopulationCost.Should().Be(4655.2m);
-        actual.RepopulationCost.Should().Be((location.DeskCount - location.DockCount) * costs.Dock 
+        await Assert.That(actual.RepopulationCost).IsEqualTo((location.DeskCount - location.DockCount) * costs.Dock 
             + (location.DeskCount - location.KeyboardCount) * costs.Keyboard
             + (location.DeskCount - location.MouseCount) * costs.Mouse
             + (location.DeskCount - location.ChairCount) * costs.Chair );
