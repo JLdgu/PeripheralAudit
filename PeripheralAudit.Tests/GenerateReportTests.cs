@@ -44,14 +44,14 @@ internal sealed class GenerateReportTests
         await Assert.That(actual!.Attributes["colspan"]!.Value).IsEqualTo("12");
         await Assert.That(actual!.Attributes["class"]!.Value).IsEqualTo("tal");
 
-        HtmlNode bronze = actual!.Descendants("bronze").First();
-        HtmlNode dock = actual!.Descendants("dock").First();
-        HtmlNode monitor = actual!.Descendants("monitor").First();
-        HtmlNode keyboard = actual!.Descendants("keyboard").First();
-        HtmlNode mouse = actual!.Descendants("mouse").First();
+        HtmlNode? bronze = actual!.Descendants("bronze").First();
+        HtmlNode? dock = actual!.Descendants("dock").First();
+        HtmlNode? monitor = actual!.Descendants("monitor").First();
+        HtmlNode? keyboard = actual!.Descendants("keyboard").First();
+        HtmlNode? mouse = actual!.Descendants("mouse").First();
         HtmlNode? chair = actual!.Descendants("chair").FirstOrDefault();
-        HtmlNode silver = actual!.Descendants("silver").First();
-        HtmlNode gold = actual!.Descendants("gold").First();
+        HtmlNode? silver = actual!.Descendants("silver").First();
+        HtmlNode? gold = actual!.Descendants("gold").First();
 
         await Assert.That(bronze.InnerText).IsEqualTo($"Repopultion Costs &#163;53 - ");
         await Assert.That(dock.InnerText).IsEqualTo($"1 dock @ &#163;{_costs.Dock}, ");
@@ -90,14 +90,14 @@ internal sealed class GenerateReportTests
         await Assert.That(actual!.Attributes["colspan"]!.Value).IsEqualTo("12");
         await Assert.That(actual!.Attributes["class"]!.Value).IsEqualTo("tal");
 
-        HtmlNode bronze = actual!.Descendants("bronze").First();
-        HtmlNode dock = actual!.Descendants("dock").First();
-        HtmlNode monitor = actual!.Descendants("monitor").First();
-        HtmlNode keyboard = actual!.Descendants("keyboard").First();
-        HtmlNode mouse = actual!.Descendants("mouse").First();
-        HtmlNode chair = actual!.Descendants("chair").First();
-        HtmlNode silver = actual!.Descendants("silver").First();
-        HtmlNode gold = actual!.Descendants("gold").First();
+        HtmlNode? bronze = actual!.Descendants("bronze").First();
+        HtmlNode? dock = actual!.Descendants("dock").First();
+        HtmlNode? monitor = actual!.Descendants("monitor").First();
+        HtmlNode? keyboard = actual!.Descendants("keyboard").First();
+        HtmlNode? mouse = actual!.Descendants("mouse").First();
+        HtmlNode? chair = actual!.Descendants("chair").First();
+        HtmlNode? silver = actual!.Descendants("silver").First();
+        HtmlNode? gold = actual!.Descendants("gold").First();
 
         await Assert.That(bronze.InnerText).IsEqualTo($"Repopultion Costs &#163;{82 * count} - ");
         await Assert.That(dock.InnerText).IsEqualTo($"{count} dock{plural} @ &#163;{_costs.Dock}, ");
