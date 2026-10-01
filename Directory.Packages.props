@@ -24,6 +24,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
-    <PackageVersion Include="Velopack" Version="1.2.0" />
+    <PackageVersion Include="Velopack" Version="1.2.161" />
   </ItemGroup>
 </Project>
